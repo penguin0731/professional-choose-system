@@ -1,0 +1,18 @@
+.stuForm, 
+.teachForm,
+.mesForm,
+.majForm {
+  .el-dialog {
+    top: 50%;
+    transform: translateY(-50%);
+    .el-dialog__body {
+      .el-form {
+        .el-form-item {
+          .el-input__inner {
+            width: 370px;
+          }
+        }
+      }
+    }
+  }
+}

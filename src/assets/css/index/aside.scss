@@ -1,0 +1,69 @@
+.el-aside {
+  display: flex;
+  flex-direction: column;
+  .m-aside {
+    // background-color: #eef1f6;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    .menu {
+      background-color: #e4e7ed;
+      position: relative;
+      .title {
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        width: calc(100% - 64px);
+        height: 40px;
+        line-height: 40px;
+        padding-left: 10px;
+        color: #303133;
+        font-weight: bold;
+        /* 进入前,离开后 */
+        &.v-enter,
+        &.v-leave-to {
+          width: 100%;
+          opacity: 0;
+        }
+        /* 进入后，离开前 */
+        &.v-enter-to,
+        &.v-leave {
+          width: 0;
+          opacity: 1;
+        }
+        &.v-enter-active,
+        &.v-leave-active {
+          transition: all 0.3s;
+        }
+      }
+      .menu-btn {
+        // display: inline-block;
+        float: right;
+        width: 64px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        color: #fff;
+        background-color: #409eff;
+        cursor: pointer;
+        // float: right;
+      }
+    }
+    .el-menu {
+      flex: 1;
+      border: none;
+      background-color: #dcdfe6;
+      &.el-menu-vertical-demo:not(.el-menu--collapse) {
+        width: 200px;
+        min-height: 400px;
+      }
+      .el-submenu {
+        background-color: #e4e7ed;
+        .el-menu {
+          background-color: #f2f6fc;
+        }
+      }
+    }
+  }
+}

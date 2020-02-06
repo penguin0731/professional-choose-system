@@ -1,0 +1,33 @@
+.login {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url("../assets/img/bg.jpg") no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .login_box {
+    float: right;
+    width: 420px;
+    background-color: rgba(255, 255, 255, 0.6);
+    margin-right: 20%;
+    padding-top: 20px;
+    border-radius: 20px;
+    .login_logo {
+      height: 60px;
+      background: url("../assets/img/logo.png") center no-repeat;
+      background-size: 56%;
+      margin-bottom: 20px;
+    }
+    .login_form {
+      width: 300px;
+      margin: 0 auto;
+      .login_btn{
+        float: right;
+      }
+    }
+  }
