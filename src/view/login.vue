@@ -72,7 +72,7 @@ export default {
             if (md5(this.loginForm.password) === res[0].password) {
               this.isLogin = false;
               const user = JSON.stringify(res[0]);
-              this.$cookies.set("loginUser", user, 0);
+              this.$cookies.set("loginUser", user, "0");
               this.$router.push({ path: "/" });
             } else {
               this.isLogin = true;

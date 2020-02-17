@@ -14,6 +14,7 @@ export default new Router({
       name: 'Index',
       component: Index,
       meta: {
+        title: '专业方向选报系统',
         requireAuth: true
       },
       beforeEnter: (to, from, next) => {
@@ -24,7 +25,10 @@ export default new Router({
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {
+        title: '登录'
+      },
     },
     // {
     //   path: '/',

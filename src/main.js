@@ -9,7 +9,7 @@ import store from '@/store'
 import ElementUI from 'element-ui'
 import router from './router'
 import VueCookies from 'vue-cookies'
-// import Date from './dateFormat'
+import Date from './dateFormat'
 
 
 Vue.config.productionTip = false
@@ -17,18 +17,12 @@ Vue.use(ElementUI);
 Vue.use(VueCookies);
 
 
-// router.beforeEach((to, from, next) => {
-//   if(to.matched.some(r => r.meta.requireAuth)) {
-//     const user = Vue.$cookies.get('loginUser');
-//     if(user) {
-//       next();
-//     }else {
-//       next('/login');
-//     }
-//   }else {
-//     next();
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+  next();
+})
 
 /* eslint-disable no-new */
 new Vue({
