@@ -14,18 +14,16 @@ const router = express.Router(); //得到一个路由对象
  */
 
 
-router.get('/findByPage', function(request, response) {
+router.get('/findByPage', async function(request, response) {
 	const id = request.query.id;
 	//获取page 和 pageSize
 	const page = request.query.page || 1; //默认为1
 	const pageSize = request.query.pageSize || 10; //默认为10
-	Promise.all([directService.findByPage(id, page, pageSize), directService.count(id)]).
-		then((res) => {
-			response.send({
-				data: res[0],
-				count: res[1],
-			});
-		});
+	const results = await Promise.all([directService.findByPage(id, page, pageSize), directService.count(id)]);
+	response.send({
+		data: results[0],
+		count: results[1],
+	});
 });
 
 /**
@@ -35,11 +33,10 @@ router.get('/findByPage', function(request, response) {
  * 请求参数: direction    type:object   ex:{}  方向对象
  * direction      {major_id: '111',grade_id: '111', ...}
  */
-router.post('/addDirection', function(request, response) {
+router.post('/addDirection', async function(request, response) {
 	const direction = request.body;
-	directService.addDirection(direction).then((res) => {
-		response.send(res);
-	});
+	const result = await directService.addDirection(direction);
+	response.send(result);
 });
 
 /**
@@ -49,11 +46,10 @@ router.post('/addDirection', function(request, response) {
  * 请求参数: directions    array   [{},{}]   方向数组
  * majors[item]       {major_id: xxx}
  */
-router.delete('/delDirections', function(request, response) {
+router.delete('/delDirections', async function(request, response) {
 	const directions = request.body.directions;
-	directService.delDirections(directions).then((res) => {
-		response.send(res);
-	});
+	const result = await directService.delDirections(directions);
+	response.send(result);
 });
 
 /**
@@ -62,17 +58,15 @@ router.delete('/delDirections', function(request, response) {
  * methods: get
  * 请求参数: direction    type:string        方向名称
  */
-router.get('/searchDirections', function(request, response) {
+router.get('/searchDirections', async function(request, response) {
 	const id = request.query.major_id;
 	const name = request.query.name;
 	const page = request.query.page || 1; //默认为1
 	const pageSize = request.query.pageSize || 10; //默认为10
-	Promise.all([directService.searchDirections(id, name, page, pageSize), directService.searchCount(id, name)])
-	.then((res) => {
-		response.send({
-			data: res[0],
-			count: res[1]
-		});
+	const results = await Promise.all([directService.searchDirections(id, name, page, pageSize), directService.searchCount(id, name)]);
+	response.send({
+		data: results[0],
+		count: results[1]
 	});
 });
 
@@ -82,12 +76,23 @@ router.get('/searchDirections', function(request, response) {
  * methods: post
  * 请求参数: direction    type:object    {id: 必填}      方向对象
  */
-router.post('/updateDirection', function(request, response) {
+router.post('/updateDirection', async function(request, response) {
 	const direction = request.body;
-	directService.updateDirection(direction).then((res) => {
-		response.send(res);
-	});
+	const result = await directService.updateDirection(direction);
+	response.send(result);
 });
+
+/**
+ * 根据年级id和专业id查询方向
+ * api: /api/direction/findDirectByUser
+ * methods: post
+ * 请求参数: user       type:object     {grade_id:xx, major_id:xx}  用户对象
+ */
+router.post('/findDirectByUser', async function (request, response) {
+	const user = request.body;
+	const result = await directService.findDirectByUser(user);
+	response.send(result);
+})
 
 module.exports = router;
 

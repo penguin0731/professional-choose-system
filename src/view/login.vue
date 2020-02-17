@@ -18,11 +18,12 @@
             autocomplete="off"
             prefix-icon="el-icon-lock"
             placeholder="请输入密码"
+            @keyup.enter.native="submitForm"
           ></el-input>
         </el-form-item>
         <el-form-item>
           <span v-show="isLogin" style="color: #F56C6C">用户名或密码错误！</span>
-          <el-button class="login_btn" type="primary" @click.stop="submitForm">登录</el-button>
+          <el-button class="login_btn" type="primary" @click.stop="submitForm($event)" >登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -31,7 +32,7 @@
 
 <script>
 import api from "@/api";
-import { mapState, mutations, mapActions, mapMutations } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 import md5 from "md5";
 export default {
   data() {
@@ -62,15 +63,16 @@ export default {
     };
   },
   methods: {
+    ...mapMutations('loginUser', ['setUser']),
+    ...mapActions('loginUser', ['queryUserByLoginId']),
     submitForm() {
       this.$refs.loginForm.validate(valid => {
-        console.log(valid);
         if (valid) {
-          api.loginUser.queryLoginUser(this.loginForm).then(res => {
-            if (md5(this.loginForm.password) === res.data[0].password) {
+          this.queryUserByLoginId(this.loginForm).then(res => {
+            if (md5(this.loginForm.password) === res[0].password) {
               this.isLogin = false;
-              const user = JSON.stringify(res.data[0]);
-              this.$cookies.set("loginUser", user, 24 * 60 * 60);
+              const user = JSON.stringify(res[0]);
+              this.$cookies.set("loginUser", user, 0);
               this.$router.push({ path: "/" });
             } else {
               this.isLogin = true;

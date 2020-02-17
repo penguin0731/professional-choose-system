@@ -34,19 +34,25 @@ export default {
     };
   },
   computed: {
-      ...mapState("role", ["currentPage", "pageSize"]),
+    ...mapState("role", ["currentPage", "pageSize"])
   },
   methods: {
-      ...mapActions("role", ["findByPage", "updateRole"]),
+    ...mapActions("role", ["findByPage", "updateRole"]),
     handleClose() {
       this.$emit("close", false);
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) return;
-        this.updateRole(this.editForm);
-        this.$emit("close", false);
-        this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
+        this.updateRole(this.editForm).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });
+        this.handleClose();
       });
     }
   }

@@ -2,7 +2,7 @@
   <div class="grade">
     <div class="tool-bar">
       <div class="btn-group">
-        <el-button type="primary" size="small" @click="showAddForm(true)">
+        <el-button v-if="showBtn.isAdd" type="primary" size="small" @click="showAddForm(true)">
           <i class="el-icon-plus"></i>
           添加
         </el-button>
@@ -10,7 +10,7 @@
       <el-input v-model="input" placeholder="模糊查询"></el-input>
       <el-button type="primary" size="small" @click="search">查询</el-button>
     </div>
-    <grade-table />
+    <grade-table :gradeModule="gradeModule" />
     <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
@@ -41,14 +41,31 @@ export default {
       addFormVisible: false,
       addFormData: {
         grade_name: ""
+      },
+      gradeModule: null,
+      showBtn: {
+        isAdd: false
       }
     };
+  },
+  created() {
+    this.gradeModule = this.showModuleList.filter(item => {
+      if (item.label == "年级管理") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    this.gradeModule[0].children.forEach(item => {
+      if (item.label == "年级添加") {this.showBtn.isAdd = true;}
+    });
   },
   mounted() {
     this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
   },
   computed: {
-    ...mapState("grade", ["currentPage", "pageSize", "count"])
+    ...mapState("grade", ["currentPage", "pageSize", "count"]),
+    ...mapState("role", ["showModuleList"])
   },
   methods: {
     ...mapMutations("grade", ["setPageSize"]),

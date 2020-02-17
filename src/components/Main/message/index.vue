@@ -2,7 +2,7 @@
   <div class="message">
     <div class="tool-bar">
       <div class="btn-group">
-        <el-button type="primary" size="small" @click="showAddForm(true)">
+        <el-button v-if="showBtn.isAdd" type="primary" size="small" @click="showAddForm(true)">
           <i class="el-icon-plus"></i>
           添加
         </el-button>
@@ -10,7 +10,7 @@
       <el-input v-model="input" placeholder="模糊查询"></el-input>
       <el-button type="primary" size="small" @click="search">查询</el-button>
     </div>
-    <msg-table />
+    <msg-table :msgModule="msgModule" />
     <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
@@ -42,8 +42,24 @@ export default {
         message_title: "",
         message_detail: ""
       },
-      addFormVisible: false
+      addFormVisible: false,
+      msgModule: null,
+      showBtn: {
+        isAdd: false
+      }
     };
+  },
+  created() {
+    this.msgModule = this.showModuleList.filter(item => {
+      if (item.label == "公告管理") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    this.msgModule[0].children.forEach(item => {
+      if (item.label == "公告添加") {this.showBtn.isAdd = true;}
+    });
   },
   mounted() {
     this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
@@ -54,7 +70,8 @@ export default {
       "currentPage",
       "pageSize",
       "count"
-    ])
+    ]),
+    ...mapState("role", ["showModuleList"])
   },
   methods: {
     ...mapMutations("message", ["setPage", "setPageSize"]),

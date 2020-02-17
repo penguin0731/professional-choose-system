@@ -28,51 +28,30 @@ export default {
         }
     },
     actions: {
-        findByPage({ commit }, obj) {
-            api.student.findByPage(obj).then(res => {
-                commit('setCount', res.data.count);
-                commit('setStuList', res.data.data);
-            });
+        async findByPage({ commit }, obj) {
+            const result = await api.student.findByPage(obj);
+            commit('setCount', result.count);
+            commit('setStuList', result.data);
         },
-        addStudents({ state, dispatch }, students) {
-            api.student.addStudents({ students }).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            })
+        async addStudents({ state, dispatch }, students) {
+            const result = await api.student.addStudents({ students });
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         },
-        delStudents({ state, dispatch }, students) {
-            api.student.delStudents({ students }).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            })
+        async delStudents({ state, dispatch }, students) {
+            const result = await api.student.delStudents({ students });
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         },
-        searchStudents({ commit }, value) {
-            api.student.searchStudents({ name: value }).then(res => {
-                commit('setCount', res.data.count);
-                commit('setStuList', res.data.data);
-            })
+        async searchStudents({ commit }, value) {
+            const result = await api.student.searchStudents({ name: value });
+            commit('setCount', result.count);
+            commit('setStuList', result.data);
         },
-        updateStudent({ state, dispatch }, editForm) {
-            api.student.updateStudent(editForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            });
-
+        async updateStudent({ state, dispatch }, editForm) {
+            const result = await api.student.updateStudent(editForm);
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         }
     }
 }

@@ -3,7 +3,7 @@ const createConnection = require('../dao/dbutil');
 /**
  * 查询年级总数
  */
-function count() {
+exports.count = async function() {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -23,7 +23,7 @@ function count() {
  * page: 页码，从1开始
  * pageSize: 每页显示多少条数据
  */
-function findByPage(page, pageSize) {
+exports.findByPage = async function(page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -42,7 +42,7 @@ function findByPage(page, pageSize) {
  * 添加年级
  * grade: 存放添加年级信息的对象
  */
-function addGrade(grade) {
+exports.addGrade = async function(grade) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -61,7 +61,7 @@ function addGrade(grade) {
 /**
  * 查询匹配的年级总数
  */
-function searchCount(name) {
+exports.searchCount = async function(name) {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -79,7 +79,7 @@ function searchCount(name) {
 /**
  * 查询年级
  */
-function searchGrade(name, page, pageSize) {
+exports.searchGrade = async function(name, page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -96,7 +96,7 @@ function searchGrade(name, page, pageSize) {
 /**
  * 更新年级
  */
-function updateGrade(grade) {
+exports.updateGrade = async function(grade) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -109,11 +109,3 @@ function updateGrade(grade) {
 	});
 }
 
-module.exports = {
-	count,
-	findByPage,
-	addGrade,
-	searchCount,
-	searchGrade,
-	updateGrade,
-};

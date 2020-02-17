@@ -44,10 +44,17 @@ export default {
   data() {
     return {
       rules: {
-        message_title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        message_detail: [{ required: true, message: "请输入详情", trigger: "blur" }]
+        message_title: [
+          { required: true, message: "请输入标题", trigger: "blur" }
+        ],
+        message_detail: [
+          { required: true, message: "请输入详情", trigger: "blur" }
+        ]
       }
     };
+  },
+  computed: {
+    ...mapState("loginUser", ["user"])
   },
   methods: {
     ...mapActions("message", ["addMessage"]),
@@ -59,14 +66,21 @@ export default {
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        if(!valid) return;
+        if (!valid) return;
         const data = {
           ...this.addForm,
-          release_time: new Date().format('yyyy-MM-dd hh:mm:ss'),
-          message_username: ''
-        }
-        console.log(data);
-        this.addMessage(data);
+          release_time: new Date().format("yyyy-MM-dd hh:mm:ss"),
+          message_username: this.user.name
+        };
+        // console.log(data);
+        this.addMessage(data).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });
         this.handleClose();
       });
     }

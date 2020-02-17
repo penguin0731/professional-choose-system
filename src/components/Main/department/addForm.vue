@@ -34,11 +34,8 @@ export default {
       }
     };
   },
-  computed: {
-    ...mapState("department", ["currentPage", "pageSize"]),
-  },
   methods: {
-    ...mapActions("department", ["findByPage", "addDept"]),
+    ...mapActions("department", ["addDept"]),
     handleClose() {
       this.$emit("show", false);
     },
@@ -48,7 +45,14 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) return;
-        this.addDept(this.addForm);
+        this.addDept(this.addForm).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });
         this.handleClose();
       });
     }

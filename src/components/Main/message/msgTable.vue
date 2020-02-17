@@ -32,8 +32,8 @@
       </el-table-column>
       <el-table-column fixed="right" align="center" label="操作" min-width="200">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="success" size="mini">编辑</el-button>
-          <el-button type="primary" size="mini" @click="changeState(scope.row)">修改状态</el-button>
+          <el-button v-if="showBtn.isEdit" @click="handleClick(scope.row)" type="success" size="mini">编辑</el-button>
+          <el-button v-if="showBtn.isEdit" type="primary" size="mini" @click="changeState(scope.row)">修改状态</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -52,6 +52,7 @@ export default {
   components: {
     editForm
   },
+  props: ["msgModule"],
   data() {
     return {
       editFormData: {
@@ -61,9 +62,17 @@ export default {
         message_username: ""
       },
       editFormVisible: false,
+      showBtn: {
+        isEdit: false
+      }
     };
   },
   mounted() {
+    this.msgModule[0].children.forEach(item => {
+      if (item.label == "公告修改") {
+        this.showBtn.isEdit = true;
+      }
+    });
     this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
   },
   computed: {

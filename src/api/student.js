@@ -8,12 +8,13 @@ const url = {
     updateStudent: '/api/student/updateStudent'
 }
 const student = {
-    findByPage(params) {
-        return axios.get(url.findByPage, { params });
+    async findByPage(params) {
+        const result = await axios.get(url.findByPage, { params });
+        return result.data;
     },
-    addStudents(params) {
+    async addStudents(params) {
         const data = JSON.stringify(params);
-        return axios({
+        const result = await  axios({
             url: url.addStudents,
             method: 'post',
             headers: {
@@ -21,10 +22,11 @@ const student = {
             },
             data
         });
+        return result.data;
     },
-    delStudents(params) {
+    async delStudents(params) {
         const data = JSON.stringify(params);
-        return axios({
+        const result = await  axios({
             url: url.delStudents,
             method: 'delete',
             headers: {
@@ -32,13 +34,15 @@ const student = {
             },
             data
         });
+        return result.data;
     },
-    searchStudents(params) {
-        return axios.get(url.searchStudents, { params });
+    async searchStudents(params) {
+        const result = await axios.get(url.searchStudents, { params });
+        return result.data;
     },
-    updateStudent(params) {
+    async updateStudent(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await  axios({
             url: url.updateStudent,
             method: 'post',
             headers: {
@@ -46,6 +50,7 @@ const student = {
             },
             data
         });
+        return result.data;
     }
 }
 

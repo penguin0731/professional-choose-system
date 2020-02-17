@@ -8,12 +8,13 @@ const url = {
     updateTeacher: '/api/teacher/updateTeacher'
 }
 const teacher = {
-    findByPage(params) {
-        return axios.get(url.findByPage, { params });
+    async findByPage(params) {
+        const result = await axios.get(url.findByPage, { params });
+        return result.data;
     },
-    addTeachers(params) {
+    async addTeachers(params) {
         const data = JSON.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.addTeachers,
             method: 'post',
             headers: {
@@ -21,10 +22,11 @@ const teacher = {
             },
             data
         });
+        return result.data;
     },
-    delTeachers(params) {
+    async delTeachers(params) {
         const data = JSON.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.delTeachers,
             method: 'delete',
             headers: {
@@ -32,13 +34,15 @@ const teacher = {
             },
             data
         });
+        return result.data;
     },
-    searchTeachers(params) {
-        return axios.get(url.searchTeachers, { params });
+    async searchTeachers(params) {
+        const result = await axios.get(url.searchTeachers, { params });
+        return result.data;
     },
-    updateTeacher(params) {
+    async updateTeacher(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.updateTeacher,
             method: 'post',
             headers: {
@@ -46,6 +50,7 @@ const teacher = {
             },
             data
         });
+        return result.data;
     }
 }
 

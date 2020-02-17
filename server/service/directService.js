@@ -3,7 +3,7 @@ const createConnection = require('../dao/dbutil');
 /**
  * 查询方向总数
  */
-function count(id) {
+exports.count = async function(id) {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -22,7 +22,7 @@ function count(id) {
  * page: 页码，从1开始
  * pageSize: 每页显示多少条数据
  */
-function findByPage(id, page, pageSize) {
+exports.findByPage = async function(id, page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -46,7 +46,7 @@ function findByPage(id, page, pageSize) {
 /**
  * 添加方向
  */
-function addDirection(direction) {
+exports.addDirection = async function(direction) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -66,7 +66,7 @@ function addDirection(direction) {
  * 删除方向
  * directions: 存放删除方向的数组
  */
-function delDirections(directions) {
+exports.delDirections = async function(directions) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -85,7 +85,7 @@ function delDirections(directions) {
 /**
  *查询匹配的方向总数
  */
-function searchCount(id, name) {
+exports.searchCount = async function(id, name) {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -104,7 +104,7 @@ function searchCount(id, name) {
 /**
  * 查询方向
  */
-function searchDirections(id, name, page, pageSize) {
+exports.searchDirections = async function(id, name, page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -122,26 +122,46 @@ function searchDirections(id, name, page, pageSize) {
 /**
  * 更新方向
  */
-function updateDirection(direction) {
+exports.updateDirection = async function(direction) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
 
-		const sql = 'update direction set ? where direction_id=\'';
-		conn.query(sql + direction.direction_id + '\'', direction, function(err, results) {
-			err ? rej(err) : res({msg: '更新成功'});
-		});
+		if(direction.constructor == Object) {
+			const sql = 'update direction set ? where direction_id=\'';
+			conn.query(sql + direction.direction_id + '\'', direction, function(err, results) {
+				err ? rej(err) : res({msg: '更新成功'});
+			});
+		}else if(direction.constructor == Array) {
+			for(const direct of direction) {
+				const sql = 'update direction set ? where direction_id=\'';
+				conn.query(sql + direct.direction_id + '\'', direct, function(err, results) {
+					err ? rej(err) : res({msg: '更新成功'});
+				});
+			}
+		}
 
 		conn.end();
 	});
 }
 
-module.exports = {
-	count,
-	findByPage,
-	addDirection,
-	delDirections,
-	searchCount,
-	searchDirections,
-	updateDirection,
-};
+/**
+ * 根据年级专业查询方向
+ */
+exports.findDirectByUser = async function(user) {
+	return new Promise((res, rej) => {
+		const conn = createConnection();
+		conn.connect();
+
+		const sql = `select * from direction where grade_id=? and major_id=?`;
+		const params = [user.grade_id, user.major_id];
+		conn.query(sql, params, function (err, results) {
+			err ? rej(err) : res(results);
+		})
+
+		conn.end();
+	});
+}
+
+
+

@@ -2,7 +2,7 @@
   <div class="department">
     <div class="tool-bar">
       <div class="btn-group">
-        <el-button type="primary" size="small" @click="showAddForm(true)">
+        <el-button v-if="showBtn.isAdd" type="primary" size="small" @click="showAddForm(true)">
           <i class="el-icon-plus"></i>
           添加
         </el-button>
@@ -10,7 +10,7 @@
       <el-input v-model="input" placeholder="模糊查询"></el-input>
       <el-button type="primary" size="small" @click="search">查询</el-button>
     </div>
-    <dept-table />
+    <dept-table :deptModule="deptModule" />
     <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
@@ -41,14 +41,31 @@ export default {
       addFormVisible: false,
       addFormData: {
         department_name: ""
+      },
+      deptModule: null,
+      showBtn: {
+        isAdd: false
       }
     };
+  },
+  created() {
+    this.deptModule = this.showModuleList.filter(item => {
+      if (item.label == "院系管理") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    this.deptModule[0].children.forEach(item => {
+      if (item.label == "院系添加") {this.showBtn.isAdd = true;}
+    });
   },
   mounted() {
     this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
   },
   computed: {
-    ...mapState("department", ["currentPage", "pageSize", "count"])
+    ...mapState("department", ["currentPage", "pageSize", "count"]),
+    ...mapState("role", ["showModuleList"])
   },
   methods: {
     ...mapMutations("department", ["setPage", "setPageSize"]),

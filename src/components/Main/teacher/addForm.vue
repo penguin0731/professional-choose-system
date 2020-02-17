@@ -28,16 +28,6 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="addForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="院系" prop="dept_id">
-          <el-select v-model="addForm.dept_id" placeholder="请选择">
-            <el-option
-              v-for="item in deptList"
-              :key="item.department_id"
-              :label="item.department_name"
-              :value="item.department_id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="身份" prop="role_id">
           <el-select v-model="addForm.role_id" placeholder="请选择">
             <el-option
@@ -67,19 +57,17 @@ export default {
         login_id: [{ required: true, message: "请输入工号", trigger: "blur" }],
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         gender: [{ required: true, message: "请选择性别", trigger: "change" }],
-        dept_id: [{ required: true, message: "请选择院系", trigger: "change" }],
         role_id: [{ required: true, message: "请选择身份", trigger: "change" }]
       }
     };
   },
   computed: {
-    ...mapState("department", ["deptList"]),
     ...mapState("role", ["teachRoleList"])
   },
   methods: {
     ...mapActions("teacher", ["addTeachers"]),
     handleClose() {
-      this.$emit("show", false);
+      this.$emit("close", false);
     },
     reset() {
       this.$refs.addForm.resetFields();
@@ -88,7 +76,14 @@ export default {
       this.$refs[formName].validate(valid => {
         const arr = [this.addForm];
         console.log(arr);
-        this.addTeachers(arr);
+        this.addTeachers(arr).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });
         this.handleClose();
       });
     }

@@ -8,15 +8,14 @@ import App from './App'
 import store from '@/store'
 import ElementUI from 'element-ui'
 import router from './router'
-import myDate from './dateFormat'
 import VueCookies from 'vue-cookies'
+// import Date from './dateFormat'
 
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(VueCookies);
 
-Vue.prototype.$myDate = myDate;
 
 // router.beforeEach((to, from, next) => {
 //   if(to.matched.some(r => r.meta.requireAuth)) {
@@ -33,7 +32,7 @@ Vue.prototype.$myDate = myDate;
 
 /* eslint-disable no-new */
 new Vue({
+  render: h => h(App),
   router,
-  store,
-  render: h => h(App)
+  store
 }).$mount("#app")

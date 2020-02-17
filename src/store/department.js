@@ -28,43 +28,26 @@ export default {
         }
     },
     actions: {
-        findByPage({ commit }, obj) {
-            api.department.findByPage(obj).then(res => {
-                setTimeout(() => {
-                    commit('setLoading', false);
-                }, 1000);
-                commit('setCount', res.data.count);
-                commit('setDeptList', res.data.data);
-            });
+        async findByPage({ commit }, obj) {
+            const result = await api.department.findByPage(obj);
+            commit('setLoading', false);
+            commit('setCount', result.count);
+            commit('setDeptList', result.data);
         },
-        addDept({ state, dispatch }, addFrom) {
-            api.department.addDepartment(addFrom).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            })
+        async addDept({ state, dispatch }, addFrom) {
+            const result = await api.department.addDepartment(addFrom)
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         },
-        searchDept({ commit }, value) {
-            api.department.searchDepartments({ name: value }).then(res => {
-                commit('setCount', res.data.count);
-                commit('setDeptList', res.data.data);
-            })
+        async searchDept({ commit }, value) {
+            const result = await api.department.searchDepartments({ name: value });
+            commit('setCount', result.count);
+            commit('setDeptList', result.data);
         },
-        updateDept({ state, dispatch }, editForm) {
-            api.department.updateDepartment(editForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            });
-
+        async updateDept({ state, dispatch }, editForm) {
+            const result = await api.department.updateDepartment(editForm);
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         }
     }
 }

@@ -3,7 +3,7 @@ const createConnection = require('../dao/dbutil');
 /**
  * 查询所有院系总数
  */
-function count() {
+exports.count = async function() {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -23,7 +23,7 @@ function count() {
  * page: 页码，从1开始
  * pageSize: 每页显示多少条数据
  */
-function findByPage(page, pageSize) {
+exports.findByPage = async function(page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -42,7 +42,7 @@ function findByPage(page, pageSize) {
  * 添加院系
  * department: 存放添加院系信息的对象
  */
-function addDepartment(department) {
+exports.addDepartment = async function(department) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -60,7 +60,7 @@ function addDepartment(department) {
 /**
  * 查询匹配的院系总数
  */
-function searchCount(name) {
+exports.searchCount = async function(name) {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -78,7 +78,7 @@ function searchCount(name) {
 /**
  * 查询院系
  */
-function searchDepartment(name, page, pageSize) {
+exports.searchDepartment = async function(name, page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -95,7 +95,7 @@ function searchDepartment(name, page, pageSize) {
 /**
  * 更新院系
  */
-function updateDepartment(department) {
+exports.updateDepartment = async function(department) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -107,12 +107,3 @@ function updateDepartment(department) {
 		conn.end();
 	});
 }
-
-module.exports = {
-	count,
-	findByPage,
-	addDepartment,
-	searchCount,
-	searchDepartment,
-	updateDepartment,
-};

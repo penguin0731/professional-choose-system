@@ -44,8 +44,15 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) return;
-        this.updateDept(this.editForm);
-        this.$emit("close", false);
+        this.updateDept(this.editForm).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });
+        this.handleClose();
       });
     }
   }

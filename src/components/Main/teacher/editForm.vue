@@ -21,17 +21,6 @@
             <el-option label="女" :value="1" :class="{selected: editForm.gender == '女'}"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="院系" prop="dept_id">
-          <el-select v-model="editForm.dept_id" placeholder="请选择" :disabled="isDisabled">
-            <el-option
-              v-for="item in deptList"
-              :key="item.department_id"
-              :label="item.department_name"
-              :value="item.department_id"
-              :class="{selected: editForm.dept_id == item.department_id}"
-            ></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="身份" prop="role_id">
           <el-select v-model="editForm.role_id" placeholder="请选择" :disabled="isDisabled">
             <el-option
@@ -82,14 +71,12 @@ export default {
         login_id: [{ required: true, message: "请输入学号", trigger: "blur" }],
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         gender: [{ required: true, message: "请选择性别", trigger: "change" }],
-        dept_id: [{ required: true, message: "请选择院系", trigger: "change" }],
         role_id: [{ required: true, message: "请选择身份", trigger: "change" }],
         person_status: [{ required: true, message: "请选择状态", trigger: "change" }]
       }
     };
   },
   computed: {
-    ...mapState("department", ["deptList"]),
     ...mapState("role", ["teachRoleList"])
   },
   methods: {
@@ -106,7 +93,6 @@ export default {
           gender,
           phone,
           email,
-          dept_id,
           role_id,
           person_status
         } = this.editForm;
@@ -116,11 +102,17 @@ export default {
           gender,
           phone,
           email,
-          dept_id,
           role_id,
           person_status
         };
-        this.updateTeacher(params);
+        this.updateTeacher(params).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });;
         this.$emit("close", false);
       });
     }

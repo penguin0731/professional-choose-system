@@ -12,22 +12,24 @@ export default new Router({
     {
       path: '/',
       name: 'Index',
-      component: () => import('@/view'),
+      component: Index,
       meta: {
         requireAuth: true
       },
       beforeEnter: (to, from, next) => {
-        if (to.meta.requireAuth) {
-          const user = Vue.$cookies.get('loginUser');
-          user ? next() : next('/login');
-        }
+        const user = Vue.$cookies.get('loginUser');
+        user ? next() : next('/login');
       }
     },
     {
       path: '/login',
       name: 'Login',
       component: Login
-    }
+    },
+    // {
+    //   path: '/',
+    //   redirect: '/login'
+    // }
   ]
 })
 

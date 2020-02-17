@@ -2,22 +2,41 @@
   <div>
     <div class="tool-bar">
       <div class="btn-group">
-        <el-button type="primary" size="small" @click="showMajorForm(true)">
-          <i class="el-icon-plus"></i>
-          添加
-        </el-button>
-        <el-button type="danger" size="small" @click="del">
-          <i class="el-icon-delete"></i>
-          删除
-        </el-button>
-        <el-button type="primary" size="small">
-          <i class="el-icon-upload"></i>
-          导入
-        </el-button>
-        <el-button type="primary" size="small">
-          <i class="el-icon-download"></i>
-          导出
-        </el-button>
+        <el-button-group>
+          <el-button v-if="showBtn.isAdd" type="primary" size="small" @click="showMajorForm(true)">
+            <i class="el-icon-plus"></i>
+            添加
+          </el-button>
+          <el-button v-if="showBtn.isDel" type="danger" size="small" @click="del">
+            <i class="el-icon-delete"></i>
+            删除
+          </el-button>
+          <el-button
+            v-if="showBtn.isImport"
+            type="primary"
+            size="small"
+            @click="showUploadForm(true)"
+          >
+            <i class="el-icon-upload"></i>
+            导入
+          </el-button>
+          <el-button type="primary" size="small">
+            <i class="el-icon-download"></i>
+            <a
+              href="/api/export/exportMajor?isDefault=undefined"
+              style="color:#fff;margin-left:5px"
+              download="专业信息"
+            >导出</a>
+          </el-button>
+          <el-button type="primary" size="small">
+            <i class="el-icon-download"></i>
+            <a
+              href="/api/export/exportMajor?isDefault=default"
+              style="color:#fff;margin-left:5px"
+              download="专业信息"
+            >导出模板</a>
+          </el-button>
+        </el-button-group>
       </div>
       <el-input v-model="input" placeholder="模糊查询"></el-input>
       <el-button type="primary" size="small" @click="search">查询</el-button>
@@ -46,8 +65,18 @@
       <el-table-column align="center" prop="create_username" label="上传者" width="120"></el-table-column>
       <el-table-column fixed="right" align="center" label="操作" min-width="270">
         <template slot-scope="scope">
-          <el-button @click="showMajorForm(true, scope.row, $event)" type="success" size="mini">编辑</el-button>
-          <el-button @click="toDirectManage(scope.row)" type="primary" size="mini">方向管理</el-button>
+          <el-button
+            v-if="showBtn.isEdit"
+            @click="showMajorForm(true, scope.row, $event)"
+            type="success"
+            size="mini"
+          >编辑</el-button>
+          <el-button
+            v-if="showBtn.isShowDirect"
+            @click="toDirectManage(scope.row)"
+            type="primary"
+            size="mini"
+          >方向管理</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -68,15 +97,18 @@
       :majorForm="majorForm"
       :formTitle="formTitle"
     />
+    <upload-form :uploadFormVisible="uploadFormVisible" @close="showUploadForm" />
   </div>
 </template>
 
 <script>
 import majorForm from "./majorForm";
+import uploadForm from "./uploadForm";
 import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   components: {
-    majorForm
+    majorForm,
+    uploadForm
   },
   data() {
     return {
@@ -88,8 +120,43 @@ export default {
         department_id: "",
         major_detail: ""
       },
-      formTitle: ""
+      uploadFormVisible: false,
+      formTitle: "",
+      majorModule: null,
+      showBtn: {
+        isAdd: false,
+        isDel: false,
+        isImport: false,
+        isEdit: false,
+        isShowDirect: false
+      }
     };
+  },
+  created() {
+    this.majorModule = this.showModuleList.filter(item => {
+      if (item.label == "专业管理") {
+        return true;
+      } else if (item.label == "方向管理") {
+        this.showBtn.isShowDirect = true;
+        return false;
+      } else {
+        return false;
+      }
+    });
+    this.majorModule[0].children.forEach(item => {
+      if (item.label == "专业添加") {
+        this.showBtn.isAdd = true;
+      }
+      if (item.label == "专业删除") {
+        this.showBtn.isDel = true;
+      }
+      if (item.label == "专业导入") {
+        this.showBtn.isImport = true;
+      }
+      if (item.label == "专业修改") {
+        this.showBtn.isEdit = true;
+      }
+    });
   },
   mounted() {
     this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
@@ -101,11 +168,17 @@ export default {
       "pageSize",
       "count",
       "majorList"
-    ])
+    ]),
+    ...mapState("role", ["showModuleList"])
   },
   methods: {
     ...mapMutations("major", ["setPage", "setPageSize", "setSelection"]),
-    ...mapActions("major", ["findByPage", "delMajors", "searchMajors", "updateMajor"]),
+    ...mapActions("major", [
+      "findByPage",
+      "delMajors",
+      "searchMajors",
+      "updateMajor"
+    ]),
     ...mapMutations("direction", ["setMajorId"]),
     //修改每页展示几条数据
     handleSizeChange(val) {
@@ -140,7 +213,14 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.delMajors(this.multipleSelection);
+          this.delMajors(this.multipleSelection).then(res => {
+            this.$message({
+              message: res.msg,
+              type: "success",
+              duration: 2000,
+              center: true
+            });
+          });
         })
         .catch(() => {
           this.$message({
@@ -148,6 +228,9 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    showUploadForm(isShow) {
+      this.uploadFormVisible = isShow;
     },
     search() {
       if (this.input == "") {

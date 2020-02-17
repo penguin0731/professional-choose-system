@@ -67,14 +67,20 @@ export default {
   data() {
     return {
       rules: {
-        login_id: [{ required: true, message: '请输入学号', trigger: "blur" }],
-        name: [{ required: true, message: '请输入姓名', trigger: "blur" }],
-        phone: [{ required: false, message: '请输入联系电话', trigger: "blur" }],
-        email: [{ required: false, message: '请输入邮箱', trigger: "blur" }],
-        gender: [{ required: true, message: '请选择性别', trigger: "change" }],
-        grade_id: [{ required: true, message: '请选择年级', trigger: "change" }],
-        major_id: [{ required: true, message: '请输入选择专业', trigger: "change" }],
-        classes: [{ required: true, message: '请输入班级', trigger: "blur" }],
+        login_id: [{ required: true, message: "请输入学号", trigger: "blur" }],
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        phone: [
+          { required: false, message: "请输入联系电话", trigger: "blur" }
+        ],
+        email: [{ required: false, message: "请输入邮箱", trigger: "blur" }],
+        gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+        grade_id: [
+          { required: true, message: "请选择年级", trigger: "change" }
+        ],
+        major_id: [
+          { required: true, message: "请选择专业", trigger: "change" }
+        ],
+        classes: [{ required: true, message: "请输入班级", trigger: "blur" }]
       }
     };
   },
@@ -85,7 +91,7 @@ export default {
   methods: {
     ...mapActions("student", ["addStudents"]),
     handleClose() {
-      this.$emit("show", false);
+      this.$emit("close", false);
     },
     reset() {
       this.$refs.addForm.resetFields();
@@ -94,7 +100,14 @@ export default {
       this.$refs[formName].validate(valid => {
         const arr = [this.addForm];
         console.log(arr);
-        this.addStudents(arr);
+        this.addStudents(arr).then(res => {
+          this.$message({
+              message: res.msg,
+              type: "success",
+              duration: 2000,
+              center: true
+          });
+        });
         this.handleClose();
       });
     }

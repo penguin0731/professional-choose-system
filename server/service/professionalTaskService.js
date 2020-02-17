@@ -3,7 +3,7 @@ const createConnection = require('../dao/dbutil');
 /**
  * 查询任务总数
  */
-function count() {
+exports.count = async function() {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -22,12 +22,24 @@ function count() {
  * page: 页码，从1开始
  * pageSize: 每页显示多少条数据
  */
-function findByPage(page, pageSize) {
+exports.findByPage = async function(page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
 
-		const sql = 'select * from choice_task where delete_flag=1 limit ?,?';
+		const sql = `select 
+						choice_task.*,
+						grade.grade_name,
+						major.major_name
+					from 
+						choice_task,
+						grade,
+						major
+					where
+						choice_task.grade_id=grade.grade_id
+						and choice_task.major_id=major.major_id
+						and choice_task.delete_flag=1
+					limit ?,?`;
 		const params = [(page - 1) * pageSize, +pageSize]; //为占位符(sql参数)提供数据
 		conn.query(sql, params, function(err, results) {
 			err ? rej(err) : res(results);
@@ -41,13 +53,16 @@ function findByPage(page, pageSize) {
  * 添加任务
  * task: 存放添加任务信息的对象
  */
-function addTask(task) {
+exports.addTask = async function(task) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
 
-		const sql = 'insert into choice_task(`grade_id`,`major_id`,`start_time`,`end_time`,`create_time`,`update_time`,`create_username`) values(?,?,?,?,?,?,?)';
-		const params = [task.grade_id, task.major_id, task.start_time, task.end_time, task.create_time, task.update_time, task.create_username];//为占位符(sql参数)提供数据
+		let task_state;
+		const now = new Date();
+		now > new Date(task.create_time) ? task_state = 1 : task_state = 0;
+		const sql = 'insert into choice_task(`grade_id`,`major_id`,`start_time`,`end_time`,`create_time`,`update_time`,`operation_username`, `task_state`) values(?,?,?,?,?,?,?,?)';
+		const params = [task.grade_id, task.major_id, task.start_time, task.end_time, task.create_time, task.update_time, task.operation_username, task_state];//为占位符(sql参数)提供数据
 		conn.query(sql, params, function(err, results) {
 			err ? rej(err) : res({msg: '添加成功'});
 		}); //执行sql语句
@@ -60,14 +75,14 @@ function addTask(task) {
  * 删除任务
  * tasks: 存放删除专业的数组
  */
-function delTasks(tasks) {
+exports.delTasks = async function(tasks) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
 
 		for (const t of tasks) {
-			const sql = 'update choice_task set delete_flag=0 where id=?';
-			conn.query(sql, [t.id], function(err, results) {
+			const sql = 'update choice_task set delete_flag=0 where task_id=?';
+			conn.query(sql, [t.task_id], function(err, results) {
 				err ? rej(err) : res({msg: '删除成功'});
 			}); //执行sql语句
 		}
@@ -78,23 +93,21 @@ function delTasks(tasks) {
 
 /**
  * 更新任务
+ * task: 存放更新任务的对象
  */
-function updateTask(task) {
+exports.updateTask = async function(task) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
-		const sql = 'update choice_task set ? where id=\'';
-		conn.query(sql + task.id + '\'', task, function(err, results) {
+
+		const sql = `update choice_task set ? where task_id='`;
+		conn.query(sql + task.task_id + `'`, task, function(err, results) {
 			err ? rej(err) : res({msg: '更新成功'});
 		});
+
 		conn.end();
 	});
 }
 
-module.exports = {
-	count,
-	findByPage,
-	addTask,
-	delTasks,
-	updateTask,
-};
+
+

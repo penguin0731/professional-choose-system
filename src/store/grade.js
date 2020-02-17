@@ -24,40 +24,25 @@ export default {
         }
     },
     actions: {
-        findByPage({ commit }, obj) {
-            api.grade.findByPage(obj).then(res => {
-                commit('setCount', res.data.count);
-                commit('setGradeList', res.data.data);
-            });
+        async findByPage({ commit }, obj) {
+            const result = await api.grade.findByPage(obj);
+            commit('setCount', result.count);
+            commit('setGradeList', result.data);
         },
-        addGrade({ state, dispatch }, addForm) {
-            console.log(addForm);
-            api.grade.addGrade(addForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', {page: state.currentPage, pageSize: state.pageSize});
-            });
+        async addGrade({ state, dispatch }, addForm) {
+            const result = await api.grade.addGrade(addForm);
+            dispatch('findByPage', {page: state.currentPage, pageSize: state.pageSize});
+            return result;
         },
-        searchGrades({ commit }, value) {
-            api.grade.searchGrades({ name: value }).then(res => {
-                commit('setCount', res.data.count);
-                commit('setGradeList', res.data.data);
-            })
+        async searchGrades({ commit }, value) {
+            const result = await api.grade.searchGrades({ name: value });
+            commit('setCount', result.count);
+            commit('setGradeList', result.data);
         },
-        updateGrade({ state, dispatch }, editForm) {
-            api.grade.updateGrade(editForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', {page: state.currentPage, pageSize: state.pageSize});
-            })
+        async updateGrade({ state, dispatch }, editForm) {
+            const result = await api.grade.updateGrade(editForm);
+            dispatch('findByPage', {page: state.currentPage, pageSize: state.pageSize});
+            return result;
         }
     }
 }

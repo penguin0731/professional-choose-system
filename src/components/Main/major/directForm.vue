@@ -52,13 +52,19 @@ export default {
   data() {
     return {
       rules: {
-        direction_name: [{ required: true, message: "请输入方向名称", trigger: "blur" }],
-        grade_id: [{ required: true, message: "请选择所属年级", trigger: "blur" }],
+        direction_name: [
+          { required: true, message: "请输入方向名称", trigger: "blur" }
+        ],
+        grade_id: [
+          { required: true, message: "请选择所属年级", trigger: "blur" }
+        ],
         limit_num: [
           { required: true, message: "请输入限选人数", trigger: "blur" },
           { type: "number", message: "限选人数必须为数字值", trigger: "blur" }
         ],
-        direction_detail: [{ required: true, message: "请输入方向介绍", trigger: "blur" }]
+        direction_detail: [
+          { required: true, message: "请输入方向介绍", trigger: "blur" }
+        ]
       }
     };
   },
@@ -67,13 +73,14 @@ export default {
   },
   computed: {
     ...mapState("grade", ["gradeList"]),
-    ...mapState("direction", ["major_id"])
+    ...mapState("direction", ["major_id"]),
+    ...mapState("loginUser", ["user"])
   },
   methods: {
     ...mapActions("grade", {
       findGradeList: "findByPage"
     }),
-    ...mapActions("direction", ["addDirection"]),
+    ...mapActions("direction", ["addDirection", "updateDirection"]),
     hanldeClose() {
       this.$emit("close", false);
     },
@@ -85,9 +92,29 @@ export default {
         const formData = {
           ...this.directForm,
           major_id: this.major_id,
-          create_time: new Date().format('yyyy-MM-dd hh:mm:ss')
+          create_time: new Date().format("yyyy-MM-dd hh:mm:ss"),
+          operation_username: this.user.name
+        };
+        if (this.formTitle == "编辑") {
+          this.updateDirection(formData).then(res => {
+            this.$message({
+              message: res.msg,
+              type: "success",
+              duration: 2000,
+              center: true
+            });
+          });
+        } else if (this.formTitle == "添加") {
+          this.addDirection(formData).then(res => {
+            this.$message({
+              message: res.msg,
+              type: "success",
+              duration: 2000,
+              center: true
+            });
+          });
         }
-        this.addDirection(formData);
+
         this.$emit("close", false);
       });
     }

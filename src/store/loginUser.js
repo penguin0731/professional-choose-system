@@ -1,3 +1,4 @@
+import api from '@/api';
 export default {
     namespaced: true,
     state: {
@@ -10,12 +11,17 @@ export default {
         }
     },
     actions: {
-        // queryLoginUser({ commit }, form) {
-        //     api.loginUser.queryLoginUser(form).then(res => {
-        //         commit('setUser', res.data[0]);
-        //         const user = JSON.stringify(res.data[0]);
-        //         Vue.$cookies.set('loginUser', user, 24 * 60 * 60);
-        //     })
-        // }
+        async queryUserByLoginId({}, form) {
+            const result = await api.loginUser.queryUserByLoginId(form);
+            return result;
+        },
+        async queryUserMsg({commit}, form) {
+            const result = await api.loginUser.queryUserMsg(form);
+            commit('setUser', result[0]);
+        },
+        async changePwd({}, form) {
+            const result = await api.loginUser.changePwd(form);
+            return result;
+        }
     }
 }

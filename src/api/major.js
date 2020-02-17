@@ -8,12 +8,13 @@ const url = {
     updateMajor: '/api/major/updateMajor'
 }
 const major = {
-    findByPage(params) {
-        return axios.get(url.findByPage, { params });
+    async findByPage(params) {
+        const result = await axios.get(url.findByPage, { params });
+        return result.data;
     },
-    addMajors(params) {
+    async addMajors(params) {
         const data = JSON.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.addMajors,
             method: 'post',
             headers: {
@@ -21,10 +22,11 @@ const major = {
             },
             data
         });
+        return result.data;
     },
-    delMajors(params) {
+    async delMajors(params) {
         const data = JSON.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.delMajors,
             method: 'delete',
             headers: {
@@ -32,13 +34,15 @@ const major = {
             },
             data
         });
+        return result.data;
     },
-    searchMajors(params) {
-        return axios.get(url.searchMajors, { params });
+    async searchMajors(params) {
+        const result = await axios.get(url.searchMajors, { params });
+        return result.data;
     },
-    updateMajor(params) {
+    async updateMajor(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.updateMajor,
             method: 'post',
             headers: {
@@ -46,6 +50,7 @@ const major = {
             },
             data
         });
+        return result.data;
     }
 }
 

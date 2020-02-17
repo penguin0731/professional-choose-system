@@ -7,14 +7,16 @@
           返回
         </el-button>
         <span style="color: #ddd; margin: 0 5px;">|</span>
-        <el-button type="primary" size="small" @click="showDirectForm(true)">
-          <i class="el-icon-plus"></i>
-          添加
-        </el-button>
-        <el-button type="danger" size="small">
-          <i class="el-icon-delete"></i>
-          删除
-        </el-button>
+        <el-button-group>
+          <el-button v-if="showBtn.isAdd" type="primary" size="small" @click="showDirectForm(true)">
+            <i class="el-icon-plus"></i>
+            添加
+          </el-button>
+          <el-button v-if="showBtn.isDel" type="danger" size="small">
+            <i class="el-icon-delete"></i>
+            删除
+          </el-button>
+        </el-button-group>
       </div>
       <el-input v-model="input" placeholder="模糊查询"></el-input>
       <el-button type="primary" size="small">查询</el-button>
@@ -52,7 +54,12 @@
       <el-table-column align="center" prop="operation_username" label="操作用户名" width="120"></el-table-column>
       <el-table-column fixed="right" align="center" label="操作" min-width="270">
         <template slot-scope="scope">
-          <el-button @click="showDirectForm(true, scope.row)" type="success" size="mini">编辑</el-button>
+          <el-button
+            v-if="showBtn.isEdit"
+            @click="showDirectForm(true, scope.row)"
+            type="success"
+            size="mini"
+          >编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -97,8 +104,34 @@ export default {
         update_time: "",
         operation_username: ""
       },
-      formTitle: ""
+      formTitle: "",
+      directModule: null,
+      showBtn: {
+        isAdd: false,
+        isDel: false,
+        isEdit: false
+      }
     };
+  },
+  created() {
+    this.directModule = this.showModuleList.filter(item => {
+      if (item.label == "方向管理") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    this.directModule[0].children.forEach(item => {
+      if (item.label == "方向添加") {
+        this.showBtn.isAdd = true;
+      }
+      if (item.label == "方向删除") {
+        this.showBtn.isDel = true;
+      }
+      if (item.label == "方向修改") {
+        this.showBtn.isEdit = true;
+      }
+    });
   },
   mounted() {
     this.findByPage({
@@ -116,7 +149,8 @@ export default {
       "count",
       "major_id",
       "directionList"
-    ])
+    ]),
+    ...mapState("role", ["showModuleList"])
   },
   methods: {
     ...mapMutations("direction", [

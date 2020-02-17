@@ -7,12 +7,13 @@ const url = {
     updateGrade: '/api/grade/updateGrade'
 }
 const grade = {
-    findByPage(params) {
-        return axios.get(url.findByPage, { params });
+    async findByPage(params) {
+        const result = await axios.get(url.findByPage, { params });
+        return result.data;
     },
-    addGrade(params) {
+    async addGrade(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.addGrade,
             method: 'post',
             headers: {
@@ -20,13 +21,15 @@ const grade = {
             },
             data
         });
+        return result.data;
     },
-    searchGrades(params) {
-        return axios.get(url.searchGrades, { params });
+    async searchGrades(params) {
+        const result = await axios.get(url.searchGrades, { params });
+        return result.data;
     },
-    updateGrade(params) {
+    async updateGrade(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.updateGrade,
             method: 'post',
             headers: {
@@ -34,6 +37,7 @@ const grade = {
             },
             data
         });
+        return result.data;
     }
 }
 

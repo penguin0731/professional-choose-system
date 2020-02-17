@@ -9,20 +9,23 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapMutations } from 'vuex';
 export default {
+  data() {
+    return {
+      user: ''
+    }
+  },
   created() {
     const user = this.$cookies.get('loginUser');
-    this.setUser(user);
-  },
-  computed: {
-    ...mapState('loginUser', ['user'])
+    this.user = user;
   },
   methods: {
-    ...mapMutations('loginUser', ['setUser']),
+    ...mapMutations("tabs", ["resetTab"]),
     logout() {
       this.$router.push({name: 'Login'});
       this.$cookies.remove('loginUser');
+      this.resetTab();
     }
   }
 };

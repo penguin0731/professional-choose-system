@@ -4,7 +4,7 @@ const md5 = require('md5');
 /**
  * 查询学生总数
  */
-function count() {
+exports.count = async function() {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -23,7 +23,7 @@ function count() {
  * page: 页码，从1开始
  * pageSize: 每页显示多少条数据
  */
-function findByPage(page, pageSize) {
+exports.findByPage = async function(page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -50,7 +50,7 @@ function findByPage(page, pageSize) {
  * 添加学生
  * students: 存放添加学生信息的数组
  */
-function addStudents(students) {
+exports.addStudents = async function(students) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -58,7 +58,7 @@ function addStudents(students) {
 		for (const stu of students) {
 			//执行sql语句，将stu中的信息加入到数据库
 			const sql = 'insert into person(`login_id`,`name`,`password`,`gender`,`phone`,`email`,`major_id`,`grade_id`,`classes`,`role_id`,`student_status`) values(?,?,?,?,?,?,?,?,?,?,?)';
-			const params = [stu.login_id, stu.name, md5(123456), stu.gender, stu.phone, stu.email, stu.major_id, stu.grade_id, stu.classes, 1, 1]; //为占位符(sql参数)提供数据
+			const params = [stu.login_id, stu.name, md5('123456'), stu.gender, stu.phone, stu.email, stu.major_id, stu.grade_id, stu.classes, 1, 1]; //为占位符(sql参数)提供数据
 				conn.query(sql, params, function(err, results) {
 				err ? rej(err) : res({msg: '添加成功'});
 			}); //执行sql语句
@@ -72,7 +72,7 @@ function addStudents(students) {
  * 删除学生
  * students: 存放删除学生的数组
  */
-function delStudents(students) {
+exports.delStudents = async function(students) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -91,7 +91,7 @@ function delStudents(students) {
 /**
  *查询匹配的学生总数
  */
-function searchCount(name) {
+exports.searchCount = async function(name) {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -109,7 +109,7 @@ function searchCount(name) {
 /**
  * 查询学生
  */
-function searchStudents(name, page, pageSize) {
+exports.searchStudents = async function(name, page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -126,7 +126,7 @@ function searchStudents(name, page, pageSize) {
 /**
  * 更新学生
  */
-function updateStudent(student) {
+exports.updateStudent = async function(student) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -141,12 +141,3 @@ function updateStudent(student) {
 	});
 }
 
-module.exports = {
-	count,
-	findByPage,
-	addStudents,
-	delStudents,
-	searchCount,
-	searchStudents,
-	updateStudent,
-};

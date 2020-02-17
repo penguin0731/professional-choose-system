@@ -40,46 +40,30 @@ export default {
         }
     },
     actions: {
-        findByPage({ commit }, obj) {
-            api.message.findByPage(obj).then(res => {
-                commit('setCount', res.data.count);
-                commit('setMessageList', res.data.data);
-            });
+        async findByPage({ commit }, obj) {
+            const result = await api.message.findByPage(obj);
+            commit('setCount', result.count);
+            commit('setMessageList', result.data);
         },
-        findShowMes({ commit }, obj) {
-            api.message.findShowMes(obj).then(res => {
-                commit('setShowMesList', res.data.data);
-            })
+        async findShowMes({ commit }, obj) {
+            const result = await api.message.findShowMes(obj);
+            commit('setShowMesList', result.data);
         },
-        addMessage({ state, dispatch }, addForm) {
-            console.log(addForm);
-            api.message.addMessage(addForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            });
+        async addMessage({ state, dispatch }, addForm) {
+            const result = await api.message.addMessage(addForm);
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         },
-        searchMessages({ commit }, value) {
-            api.message.searchMessages({ name: value }).then(res => {
-                commit('setCount', res.data.count);
-                commit('setMessageList', res.data.data);
-            })
+        async searchMessages({ commit }, value) {
+            const result = await api.message.searchMessages({ name: value })
+            commit('setCount', res.data.count);
+            commit('setMessageList', result.data);
         },
-        updateMessage({ state, dispatch }, editForm) {
-            api.message.updateMessage(editForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-                dispatch('findShowMes', { page: 1, pageSize: 4 });
-            })
+        async updateMessage({ state, dispatch }, editForm) {
+            const result = await api.message.updateMessage(editForm)
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            dispatch('findShowMes', { page: 1, pageSize: 4 });
+            return result;
         }
     }
 }

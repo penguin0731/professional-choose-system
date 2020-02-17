@@ -5,6 +5,8 @@ import student from './student'
 import teacher from './teacher'
 import major from './major'
 import direction from './direction'
+import task from './proTask'
+import taskSelected from './taskSelected'
 import grade from './grade'
 import department from './department'
 import role from './role'
@@ -22,6 +24,8 @@ export default new Vuex.Store({
     teacher,
     major,
     direction,
+    task,
+    taskSelected,
     grade,
     department,
     role,

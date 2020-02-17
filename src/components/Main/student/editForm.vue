@@ -114,11 +114,19 @@ export default {
         login_id: [{ required: true, message: "请输入学号", trigger: "blur" }],
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         gender: [{ required: true, message: "请选择性别", trigger: "change" }],
-        grade_id: [{ required: true, message: "请选择年级", trigger: "change" }],
-        major_id: [{ required: true, message: "请选择专业", trigger: "change" }],
+        grade_id: [
+          { required: true, message: "请选择年级", trigger: "change" }
+        ],
+        major_id: [
+          { required: true, message: "请选择专业", trigger: "change" }
+        ],
         classes: [{ required: true, message: "请输入班级", trigger: "blur" }],
-        student_status: [{ required: true, message: "请选择学籍状态", trigger: "change" }],
-        person_status: [{ required: true, message: "请选择学生状态", trigger: "change" }]
+        student_status: [
+          { required: true, message: "请选择学籍状态", trigger: "change" }
+        ],
+        person_status: [
+          { required: true, message: "请选择学生状态", trigger: "change" }
+        ]
       }
     };
   },
@@ -157,7 +165,14 @@ export default {
           person_status
         };
         console.log(params);
-        this.updateStudent(params);
+        this.updateStudent(params).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });
         this.$emit("close", false);
       });
     }

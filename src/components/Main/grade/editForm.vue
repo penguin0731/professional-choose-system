@@ -40,11 +40,16 @@ export default {
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        console.log(valid);
-        console.log(this.editForm);
         if (!valid) return;
-        this.updateGrade(this.editForm);
-        this.$emit("close", false);
+        this.updateGrade(this.editForm).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });
+        this.hanldeClose();
       });
     }
   }

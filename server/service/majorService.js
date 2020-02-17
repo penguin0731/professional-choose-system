@@ -3,7 +3,7 @@ const createConnection = require('../dao/dbutil');
 /**
  * 查询专业总数
  */
-function count() {
+exports.count = async function() {
     return new Promise((res, rej) => {
         const conn = createConnection(); //创建连接
         conn.connect(); //打开连接
@@ -22,7 +22,7 @@ function count() {
  * page: 页码，从1开始
  * pageSize: 每页显示多少条数据
  */
-function findByPage(page, pageSize) {
+exports.findByPage = async function(page, pageSize) {
     return new Promise((res, rej) => {
         const conn = createConnection();
         conn.connect();
@@ -46,7 +46,7 @@ function findByPage(page, pageSize) {
  * 添加专业
  * majors: 存放添加专业信息的数组
  */
-function addMajors(majors) {
+exports.addMajors = async function(majors) {
     return new Promise((res, rej) => {
         const conn = createConnection();
         conn.connect();
@@ -68,7 +68,7 @@ function addMajors(majors) {
  * 删除专业
  * majors: 存放删除专业的数组
  */
-function delMajors(majors) {
+exports.delMajors = async function(majors) {
     return new Promise((res, rej) => {
         const conn = createConnection();
         conn.connect();
@@ -87,7 +87,7 @@ function delMajors(majors) {
 /**
  *查询匹配的专业总数
  */
-function searchCount(name) {
+exports.searchCount = async function(name) {
     return new Promise((res, rej) => {
         const conn = createConnection(); //创建连接
         conn.connect(); //打开连接
@@ -105,7 +105,7 @@ function searchCount(name) {
 /**
  * 查询专业
  */
-function searchMajors(major_name, page, pageSize) {
+exports.searchMajors = async function(major_name, page, pageSize) {
     return new Promise((res, rej) => {
         const conn = createConnection();
         conn.connect();
@@ -122,7 +122,7 @@ function searchMajors(major_name, page, pageSize) {
 /**
  * 更新专业
  */
-function updateMajor(major) {
+exports.updateMajor = async function(major) {
     return new Promise((res, rej) => {
         const conn = createConnection();
         conn.connect();
@@ -134,12 +134,3 @@ function updateMajor(major) {
     });
 }
 
-module.exports = {
-    count,
-    findByPage,
-    addMajors,
-    delMajors,
-    searchCount,
-    searchMajors,
-    updateMajor,
-};

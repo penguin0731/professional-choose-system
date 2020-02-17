@@ -1,5 +1,17 @@
 import api from '@/api';
 import { Message } from 'element-ui';
+
+function formatDirect(data) {
+    let newData = data.map(item => {
+        return {
+            ...item,
+            create_time: new Date(item.create_time).format('yyyy-MM-dd hh:mm:ss'),
+            update_time: item.update_time ? new Date(item.update_time).format('yyyy-MM-dd hh:mm:ss') : ''
+        }
+    });
+    return newData;
+}
+
 export default {
     namespaced: true,
     state: {
@@ -9,7 +21,8 @@ export default {
         pageSize: 10,
         count: 0,
         major_id: "",
-        directionList: null
+        directionList: null,
+        directForUserList: null
     },
     getter: {},
     mutations: {
@@ -32,57 +45,45 @@ export default {
             state.major_id = id;
         },
         setDirectionList(state, data) {
-            if(!data) {
-                state.directionList = [];
+            if (!data) {
                 return;
             }
-            const newData = data.map(item => {
-                return {
-                    ...item,
-                    create_time: new Date(item.create_time).format('yyyy-MM-dd hh:mm:ss'),
-                    update_time: item.update_time ? new Date(item.update_time).format('yyyy-MM-dd hh:mm:ss') : ''
-                }
-            });
-            state.directionList = newData;
+            state.directionList = formatDirect(data);
+        },
+        setDirectForUserList(state, data) {
+            if (!data) {
+                state.directForUserList = [];
+                return;
+            }
+            state.directForUserList = formatDirect(data);
+            // console.log(state.directForUserList);
         }
     },
     actions: {
-        findByPage({ commit }, obj) {
-            api.direction.findByPage(obj).then(res => {
-                setTimeout(() => {
-                    commit('setLoading', false);
-                }, 1000);
-                commit('setCount', res.data.count);
-                commit('setDirectionList', res.data.data);
-            });
+        async findByPage({ commit }, obj) {
+            const result = await api.direction.findByPage(obj);
+            commit('setLoading', false);
+            commit('setCount', result.count);
+            commit('setDirectionList', result.data);
         },
-        addDirection({ state, dispatch }, addForm) {
-            api.direction.addDirection(addForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { id: state.major_id, page: state.currentPage, pageSize: state.pageSize });
-            });
+        async addDirection({ state, dispatch }, addForm) {
+            const result = await api.direction.addDirection(addForm)
+            dispatch('findByPage', { id: state.major_id, page: state.currentPage, pageSize: state.pageSize });
+            return result;
         },
-        searchDirections({ commit }, value) {
-            api.direction.searchDirections({ name: value }).then(res => {
-                commit('setCount', res.data.count);
-                commit('setDirectionList', res.data.data);
-            })
+        async searchDirections({ commit }, value) {
+            const result = await api.direction.searchDirections({ name: value });
+            commit('setCount', result.count);
+            commit('setDirectionList', result.data);
         },
-        updateDirection({ state, dispatch }, editForm) {
-            api.direction.updateDirection(editForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            })
+        async updateDirection({ state, dispatch }, editForm) {
+            const result = await api.direction.updateDirection(editForm);
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
+        },
+        async findDirectByUser({ commit }, form) {
+            const result = await api.direction.findDirectByUser(form);
+            commit('setDirectForUserList', result);
         }
     }
 }

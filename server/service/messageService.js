@@ -3,7 +3,7 @@ const createConnection = require('../dao/dbutil');
 /**
  * 查询公告总数
  */
-function count() {
+exports.count = async function() {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -22,7 +22,7 @@ function count() {
  * page: 页码，从1开始
  * pageSize: 每页显示多少条数据
  */
-function findByPage(page, pageSize) {
+exports.findByPage = async function(page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -40,7 +40,7 @@ function findByPage(page, pageSize) {
 /**
  * 查询公示的公告
  */
-function findShowMes(page, pageSize) {
+exports.findShowMes = async function(page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -59,7 +59,7 @@ function findShowMes(page, pageSize) {
  * 添加公告
  * messages: 存放添加公告信息的数组
  */
-function addMessages(message) {
+exports.addMessages = async function(message) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -78,7 +78,7 @@ function addMessages(message) {
 /**
  *查询匹配的公告总数
  */
-function searchCount(title) {
+exports.searchCount = async function(title) {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -97,7 +97,7 @@ function searchCount(title) {
 /**
  * 查询公告
  */
-function searchMessages(message_title, page, pageSize) {
+exports.searchMessages = async function(message_title, page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -114,7 +114,7 @@ function searchMessages(message_title, page, pageSize) {
 /**
  * 更新公告
  */
-function updateMessage(message) {
+exports.updateMessage = async function(message) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -128,12 +128,3 @@ function updateMessage(message) {
 	});
 }
 
-module.exports = {
-	count,
-	findByPage,
-	findShowMes,
-	addMessages,
-	searchCount,
-	searchMessages,
-	updateMessage,
-};

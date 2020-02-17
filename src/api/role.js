@@ -5,18 +5,23 @@ const url = {
     findTeach: '/api/role/findTeach',
     addRole: '/api/role/addRole',
     searchRoles: '/api/role/searchRoles',
-    updateRole: '/api/role/updateRole'
+    updateRole: '/api/role/updateRole',
+    findMoudle: '/api/role/findModule',
+    findCheckedModule: '/api/role/findCheckedModule',
+    dispatchPower: '/api/role/dispatchPower'
 }
 const role = {
-    findByPage(params) {
-        return axios.get(url.findByPage, { params });
+    async findByPage(params) {
+        const result = await axios.get(url.findByPage, { params });
+        return result.data;
     },
-    findTeach() {
-        return axios.get(url.findTeach);
+    async findTeach() {
+        const result = await axios.get(url.findTeach);
+        return result.data;
     },
-    addRole(params) {
+    async addRole(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.addRole,
             method: 'post',
             headers: {
@@ -24,13 +29,15 @@ const role = {
             },
             data
         });
+        return result.data;
     },
-    searchRoles(params) {
-        return axios.get(url.searchRoles, { params });
+    async searchRoles(params) {
+        const result = await axios.get(url.searchRoles, { params });
+        return result.data;
     },
-    updateRole(params) {
+    async updateRole(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.updateRole,
             method: 'post',
             headers: {
@@ -38,6 +45,27 @@ const role = {
             },
             data
         });
+        return result.data;
+    },
+    async findModule() {
+        const result = await axios.get(url.findMoudle);
+        return result.data;
+    },
+    async findCheckedModule(params) {
+        const result = await axios.get(url.findCheckedModule, { params });
+        return result.data;
+    },
+    async dispatchPower(params) {
+        const data = JSON.stringify(params);
+        const result = await axios({
+            url: url.dispatchPower,
+            method: 'post',
+            headers: {
+                "Content-Type": 'application/json; charset=UTF-8'
+            },
+            data
+        });
+        return result.data;
     }
 }
 

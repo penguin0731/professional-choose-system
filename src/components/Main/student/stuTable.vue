@@ -22,7 +22,12 @@
       <el-table-column align="center" prop="classes" label="班级" width="120"></el-table-column>
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="handleClick($event, scope.row)" type="success" size="mini">编辑</el-button>
+          <el-button
+            v-if="showBtn.isEdit"
+            @click="handleClick($event, scope.row)"
+            type="success"
+            size="mini"
+          >编辑</el-button>
           <el-button @click="handleClick($event, scope.row)" type="primary" size="mini">查看全部</el-button>
         </template>
       </el-table-column>
@@ -44,6 +49,7 @@ export default {
   components: {
     editForm
   },
+  props: ['stuModule'],
   data() {
     return {
       editFormData: {
@@ -57,20 +63,27 @@ export default {
       },
       editFormVisible: false,
       isDisabled: false,
-      formTitle: ""
+      formTitle: "",
+      showBtn: {
+        isEdit: false
+      }
     };
   },
   mounted() {
-    this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
+    this.stuModule[0].children.forEach(item => {
+      if (item.label == "学生修改") {
+        this.showBtn.isEdit = true;
+      }
+    });
     this.findGradeList({ page: 1, pageSize: 9999 });
     this.findMajorList({ page: 1, pageSize: 9999 });
   },
   computed: {
-    ...mapState("student", ["multipleSelection", "currentPage", "pageSize", "stuList"]),
+    ...mapState("student", ["stuList"]),
+    ...mapState("role", ["showModuleList"])
   },
   methods: {
     ...mapMutations("student", ["setSelection"]),
-    ...mapActions("student", ["findByPage"]),
     ...mapActions("grade", {
       findGradeList: "findByPage"
     }),

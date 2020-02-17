@@ -55,10 +55,18 @@ export default {
   data() {
     return {
       rules: {
-        major_name: [{ required: true, message: "请输入专业名称", trigger: "blur" }],
-        major_year: [{ required: true, message: "请选择专业学制", trigger: "blur" }],
-        department_id: [{ required: true, message: "请选择专业院系", trigger: "blur" }],
-        major_detail: [{ required: true, message: "请输入专业介绍", trigger: "blur" }]
+        major_name: [
+          { required: true, message: "请输入专业名称", trigger: "blur" }
+        ],
+        major_year: [
+          { required: true, message: "请选择专业学制", trigger: "blur" }
+        ],
+        department_id: [
+          { required: true, message: "请选择专业院系", trigger: "blur" }
+        ],
+        major_detail: [
+          { required: true, message: "请输入专业介绍", trigger: "blur" }
+        ]
       }
     };
   },
@@ -66,10 +74,11 @@ export default {
     this.findDeptList({ page: 1, pageSize: 9999 });
   },
   computed: {
-    ...mapState("department", ["deptList"])
+    ...mapState("department", ["deptList"]),
+    ...mapState("loginUser", ["user"])
   },
   methods: {
-    ...mapActions("major", ["addMajors"]),
+    ...mapActions("major", ["addMajors", "updateMajor"]),
     ...mapActions("department", {
       findDeptList: "findByPage"
     }),
@@ -81,8 +90,26 @@ export default {
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        const arr = [{...this.majorForm,create_user: ""}];
-        this.addMajors(arr);
+        if (this.formTitle == "编辑") {
+          this.updateMajor(this.majorForm).then(res => {
+            this.$message({
+              message: res.msg,
+              type: "success",
+              duration: 2000,
+              center: true
+            });
+          });
+        } else if (this.formTitle == "添加") {
+          const arr = [{ ...this.majorForm, create_username: this.user.name }];
+          this.addMajors(arr).then(res => {
+            this.$message({
+              message: res.msg,
+              type: "success",
+              duration: 2000,
+              center: true
+            });
+          });
+        }
         this.$emit("close", false);
       });
     }

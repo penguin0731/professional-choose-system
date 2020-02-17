@@ -48,7 +48,14 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) return;
-        this.addGrade(this.addForm);
+        this.addGrade(this.addForm).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });
         this.handleClose();
       });
     }

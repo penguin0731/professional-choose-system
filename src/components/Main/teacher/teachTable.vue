@@ -17,7 +17,6 @@
       </el-table-column>
       <el-table-column align="center" prop="phone" label="联系电话" width="120"></el-table-column>
       <el-table-column align="center" prop="email" label="邮箱" width="200"></el-table-column>
-      <el-table-column align="center" prop="department_name" label="院系" width="120"></el-table-column>
       <el-table-column align="center" prop="role_name" label="身份" width="120"></el-table-column>
       <el-table-column align="center" prop="person_state" label="状态" width="120">
         <template slot-scope="scope">{{scope.row.person_state == 0 ? '离职' : '在职'}}</template>
@@ -46,13 +45,13 @@ export default {
   components: {
     editForm
   },
+  props: ['teachModule'],
   data() {
     return {
       editFormData: {
         login_id: "",
         name: "",
         gender: "",
-        department_name: "",
         role_name: "",
         phone: "",
         email: "",
@@ -60,12 +59,18 @@ export default {
       },
       editFormVisible: false,
       isDisabled: false,
-      formTitle: ''
+      formTitle: '',
+      showBtn: {
+        isEdit: false
+      }
     };
   },
   mounted() {
-    this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
-    this.findDeptList({ page: 1, pageSize: 9999 });
+    this.teachModule[0].children.forEach(item => {
+      if (item.label == "教职工修改") {
+        this.showBtn.isEdit = true;
+      }
+    });
     this.findTeach({ page: 1, pageSize: 9999 })
   },
   computed: {
@@ -73,10 +78,6 @@ export default {
   },
   methods: {
     ...mapMutations("teacher", ["setSelection"]),
-    ...mapActions("teacher", ["findByPage", "updateTeacher"]),
-    ...mapActions("department", {
-      findDeptList: "findByPage"
-    }),
     ...mapActions("role", ["findTeach"]),
     handleSelectionChange(val) {
       this.setSelection(val);

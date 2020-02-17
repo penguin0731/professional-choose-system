@@ -2,7 +2,7 @@
   <div class="role">
     <div class="tool-bar">
       <div class="btn-group">
-        <el-button type="primary" size="small" @click="showAddForm(true)">
+        <el-button v-if="showBtn.isAdd" type="primary" size="small" @click="showAddForm(true)">
           <i class="el-icon-plus"></i>
           添加
         </el-button>
@@ -10,7 +10,7 @@
       <el-input v-model="input" placeholder="模糊查询"></el-input>
       <el-button type="primary" size="small" @click="search">查询</el-button>
     </div>
-    <role-table @show="showAddForm" />
+    <role-table :roleModule="roleModule" />
     <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
@@ -41,18 +41,36 @@ export default {
       addFormVisible: false,
       addFormData: {
         role_name: ""
+      },
+      roleModule: null,
+      showBtn: {
+        isAdd: false
       }
     };
   },
+  created() {
+    this.roleModule = this.showModuleList.filter(item => {
+      if (item.label == "角色管理") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    this.roleModule[0].children.forEach(item => {
+      if (item.label == "角色添加") {this.showBtn.isAdd = true;}
+    });
+  },
   mounted() {
     this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
+    this.findModule();
   },
   computed: {
-    ...mapState("role", ["currentPage", "pageSize", "count"])
+    ...mapState("role", ["currentPage", "pageSize", "count", "showModuleList"])
   },
   methods: {
     ...mapMutations("role", ["setPageSize"]),
     ...mapActions("role", ["findByPage", "searchRoles"]),
+    ...mapActions("role", ["findModule"]),
     handleSizeChange(val) {
       this.setPageSize(val);
     },

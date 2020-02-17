@@ -42,8 +42,12 @@ export default {
   data() {
     return {
       rules: {
-        message_title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        message_detail: [{ required: true, message: "请输入详情", trigger: "blur" }]
+        message_title: [
+          { required: true, message: "请输入标题", trigger: "blur" }
+        ],
+        message_detail: [
+          { required: true, message: "请输入详情", trigger: "blur" }
+        ]
       }
     };
   },
@@ -54,7 +58,14 @@ export default {
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        this.updateMessage(this.editForm);
+        this.updateMessage(this.editForm).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
+        });
         this.hanldeClose();
       });
     }

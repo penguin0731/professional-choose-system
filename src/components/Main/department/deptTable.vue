@@ -17,8 +17,8 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="success" size="mini">编辑</el-button>
-          <el-button @click="changeState(scope.row)" type="primary" size="mini">修改状态</el-button>
+          <el-button v-if="showBtn.isEdit" @click="handleClick(scope.row)" type="success" size="mini">编辑</el-button>
+          <el-button v-if="showBtn.isEdit" @click="changeState(scope.row)" type="primary" size="mini">修改状态</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -33,11 +33,7 @@ export default {
   components: {
     editForm
   },
-  // mounted() {
-  //   setTimeout(() => {
-  //     this.loading = false;
-  //   }, 500);
-  // },
+  props: ["deptModule"],
   data() {
     return {
       multipleSelection: [],
@@ -46,8 +42,21 @@ export default {
         department_name: "",
         department_state: ""
       },
-      editFormVisible: false
+      editFormVisible: false,
+      showBtn: {
+        isEdit: false
+      }
     };
+  },
+  mounted() {
+    // setTimeout(() => {
+    //   this.loading = false;
+    // }, 500);
+    this.deptModule[0].children.forEach(item => {
+      if (item.label == "院系修改") {
+        this.showBtn.isEdit = true;
+      }
+    });
   },
   computed: {
     ...mapState("department", ["loading", "currentPage", "pageSize", "deptList"]),

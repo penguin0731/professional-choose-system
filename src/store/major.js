@@ -28,39 +28,25 @@ export default {
         }
     },
     actions: {
-        findByPage({ commit }, obj) {
-            api.major.findByPage(obj).then(res => {
-                commit('setCount', res.data.count);
-                commit('setMajorList', res.data.data);
-            });
+        async findByPage({ commit }, obj) {
+            const result = await api.major.findByPage(obj);
+            commit('setCount', result.count);
+            commit('setMajorList', result.data);
         },
-        addMajors({ state, dispatch }, majors) {
-            api.major.addMajors({ majors }).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            });
+        async addMajors({ state, dispatch }, majors) {
+            const result = await api.major.addMajors({ majors });
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         },
-        searchMajors({ commit }, value) {
-            api.major.searchMajors({ name: value }).then(res => {
-                commit('setCount', res.data.count);
-                commit('setMajorList', res.data.data);
-            })
+        async searchMajors({ commit }, value) {
+            const result = await api.major.searchMajors({ name: value });
+            commit('setCount', result.count);
+            commit('setMajorList', result.data);
         },
-        updateMajor({ state, dispatch }, editForm) {
-            api.major.updateMajor(editForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            })
+        async updateMajor({ state, dispatch }, editForm) {
+            const result = await api.major.updateMajor(editForm);
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         }
     }
 }

@@ -8,15 +8,17 @@ const url = {
     updateMessage: '/api/message/updateMessage'
 }
 const message = {
-    findByPage(params) {
-        return axios.get(url.findByPage, { params });
+    async findByPage(params) {
+        const result = await axios.get(url.findByPage, { params });
+        return result.data;
     },
-    findShowMes(params) {
-        return axios.get(url.findShowMes, { params });
+    async findShowMes(params) {
+        const result = await axios.get(url.findShowMes, { params });
+        return result.data;
     },
-    addMessage(params) {
+    async addMessage(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.addMessage,
             method: 'post',
             headers: {
@@ -24,13 +26,15 @@ const message = {
             },
             data
         });
+        return result.data;
     },
-    searchMessages(params) {
-        return axios.get(url.searchMessages, { params });
+    async searchMessages(params) {
+        const result = await axios.get(url.searchMessages, { params });
+        return result.data;
     },
-    updateMessage(params) {
+    async updateMessage(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.updateMessage,
             method: 'post',
             headers: {
@@ -38,6 +42,7 @@ const message = {
             },
             data
         });
+        return result.data;
     }
 }
 

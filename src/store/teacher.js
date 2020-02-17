@@ -28,51 +28,30 @@ export default {
         }
     },
     actions: {
-        findByPage({ commit }, obj) {
-            api.teacher.findByPage(obj).then(res => {
-                commit('setCount', res.data.count);
-                commit('setTeachList', res.data.data);
-            });
+        async findByPage({ commit }, obj) {
+            const result = await api.teacher.findByPage(obj);
+            commit('setCount', result.count);
+            commit('setTeachList', result.data);
         },
-        addTeachers({ state, dispatch }, teachers) {
-            api.teacher.addTeachers({ teachers }).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            })
+        async addTeachers({ state, dispatch }, teachers) {
+            const result = await api.teacher.addTeachers({ teachers })
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         },
-        delTeachers({ state, dispatch }, teachers) {
-            api.teacher.delTeachers({ teachers }).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            })
+        async delTeachers({ state, dispatch }, teachers) {
+            const result = await api.teacher.delTeachers({ teachers });
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         },
-        searchTeachers({ commit }, value) {
-            api.teacher.searchTeachers({ name: value }).then(res => {
-                commit('setCount', res.data.count);
-                commit('setTeachList', res.data.data);
-            })
+        async searchTeachers({ commit }, value) {
+            const result = await api.teacher.searchTeachers({ name: value });
+            commit('setCount', result.count);
+            commit('setTeachList', result.data);
         },
-        updateTeacher({ state, dispatch }, editForm) {
-            api.teacher.updateTeacher(editForm).then(res => {
-                Message({
-                    message: res.data.msg,
-                    type: "success",
-                    duration: 2000,
-                    center: true
-                });
-                dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
-            });
-
+        async updateTeacher({ state, dispatch }, editForm) {
+            const result = await api.teacher.updateTeacher(editForm);
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
         }
     }
 }

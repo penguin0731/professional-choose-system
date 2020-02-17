@@ -3,7 +3,7 @@ const createConnection = require('../dao/dbutil');
 /**
  * 查询角色总数
  */
-function count() {
+exports.count = async function() {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -23,12 +23,12 @@ function count() {
  * page: 页码，从1开始
  * pageSize: 每页显示多少条数据
  */
-function findByPage(page, pageSize) {
+exports.findByPage = async function(page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
 
-		const sql = 'select * from role limit ?,?';
+		const sql = 'select * from role where role_id<>2 limit ?,?';
 		const params = [(page - 1) * pageSize, +pageSize]; //为占位符(sql参数)提供数据
 		conn.query(sql, params, function(err, results) {
 			err ? rej(err) : res(results);
@@ -41,7 +41,7 @@ function findByPage(page, pageSize) {
 /**
  * 查询教职工角色
  */
-function findTeach() {
+exports.findTeach = async function() {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -59,7 +59,7 @@ function findTeach() {
  * 添加角色
  * role: 存放添加院系信息的对象
  */
-function addRole(role) {
+exports.addRole = async function(role) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -76,7 +76,7 @@ function addRole(role) {
 /**
  *查询匹配的角色总数
  */
-function searchCount(name) {
+exports.searchCount = async function(name) {
 	return new Promise((res, rej) => {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
@@ -94,7 +94,7 @@ function searchCount(name) {
 /**
  * 查询角色
  */
-function searchRole(name, page, pageSize) {
+exports.searchRole = async function(name, page, pageSize) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
@@ -111,24 +111,77 @@ function searchRole(name, page, pageSize) {
 /**
  * 更新角色
  */
-function updateRole(role) {
+exports.updateRole = async function(role) {
 	return new Promise((res, rej) => {
 		const conn = createConnection();
 		conn.connect();
+
 		const sql = 'update role set ? where role_id=\'';
 		conn.query(sql + role.role_id + '\'', role, function(err, results) {
 			err ? rej(err) : res({msg: '更新成功'});
 		});
+
 		conn.end();
 	});
 }
 
-module.exports = {
-	count,
-	findByPage,
-	findTeach,
-	addRole,
-	searchCount,
-	searchRole,
-	updateRole,
-};
+/**
+ * 查询系统模块
+ */
+exports.findModule = async function() {
+	return new Promise((res, rej) => {
+		const conn = createConnection();
+		conn.connect();
+
+		const sql = 'select * from resource where resource_type <> 0';
+		conn.query(sql, function (err, results) {
+			err ? rej(err) : res(results);
+		})
+
+		conn.end();
+	})
+}
+
+/**
+ * 查询角色已有的权限
+ */
+exports.findCheckedModule = async function(role_id) {
+	return new Promise((res, rej) => {
+		const conn = createConnection();
+		conn.connect();
+
+		const sql = `select 
+						resource.* 
+					from 
+						resource, role_resource 
+					where 
+						resource.resource_id=role_resource.resource_id 
+						and role_resource.role_id=?`;
+		const params = [role_id];
+		conn.query(sql, params, function (err, results) {
+			err ? rej(err) : res(results);
+		})
+
+		conn.end();
+	})
+}
+
+/**
+ * 分配权限
+ */
+exports.dispatchPower = async function(role_resource) {
+	return new Promise((res, rej) => {
+		const conn = createConnection();
+		conn.connect();
+
+		for(const rs of role_resource) {
+			const sql = 'insert into role_resource(`role_id`, `resource_id`) values(?,?)';
+			const params = [rs.role_id, rs.id];
+			conn.query(sql, params, function (err, results) {
+				err ? rej(err) : res({msg: '修改成功'});
+			});
+		}
+
+		conn.end();
+	})
+}

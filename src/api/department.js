@@ -7,12 +7,13 @@ const url = {
     updateDepartment: '/api/department/updateDepartment'
 }
 const department = {
-    findByPage(params) {
-        return axios.get(url.findByPage, { params });
+    async findByPage(params) {
+        const result = await axios.get(url.findByPage, { params });
+        return result.data;
     },
-    addDepartment(params) {
+    async addDepartment(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.addDepartment,
             method: 'post',
             headers: {
@@ -20,13 +21,15 @@ const department = {
             },
             data
         });
+        return result.data;
     },
-    searchDepartments(params) {
-        return axios.get(url.searchDepartments, { params });
+    async searchDepartments(params) {
+        const result = await axios.get(url.searchDepartments, { params });
+        return result.data;
     },
-    updateDepartment(params) {
+    async updateDepartment(params) {
         const data = qs.stringify(params);
-        return axios({
+        const result = await axios({
             url: url.updateDepartment,
             method: 'post',
             headers: {
@@ -34,6 +37,7 @@ const department = {
             },
             data
         });
+        return result.data;
     }
 }
 

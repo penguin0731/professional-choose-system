@@ -1,14 +1,13 @@
 <template>
   <div class="changePwd">
-    <el-dialog title="修改密码" :visible.sync="PwdFormVisible" :before-close="hanldeClose" width="500px" top="0">
-      <el-form
-        :model="ruleForm"
-        status-icon
-        :rules="rules"
-        ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
+    <el-dialog
+      title="修改密码"
+      :visible.sync="PwdFormVisible"
+      :before-close="hanldeClose"
+      width="500px"
+      top="0"
+    >
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px">
         <el-form-item label="旧密码" prop="oldPass">
           <el-input type="password" v-model="ruleForm.oldPass" autocomplete="off" show-password></el-input>
         </el-form-item>
@@ -20,7 +19,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click.stop="submitForm('ruleForm')">提交</el-button>
-          <el-button @click.stop="resetForm('ruleForm')">重置</el-button>
+          <el-button @click.stop="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -28,6 +27,9 @@
 </template>
 
 <script>
+import md5 from "md5";
+import api from "@/api";
+import { mapState, mapActions } from "vuex";
 export default {
   props: ["PwdFormVisible"],
   data() {
@@ -35,8 +37,9 @@ export default {
       if (value === "") {
         callback(new Error("请输入旧密码"));
       } else {
-        console.log("验证旧密码");
-        // callback()
+        md5(value) == this.user.password
+          ? callback()
+          : callback(new Error("旧密码错误"));
       }
     };
     var validatePass1 = (rule, value, callback) => {
@@ -71,22 +74,37 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState("loginUser", ["user"])
+  },
   methods: {
+    ...mapActions("loginUser", ["changePwd"]),
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("修改成功");
-          this.$refs[formName].resetFields();
-          this.$emit("click", false);
+          const form = {
+            login_id: this.user.login_id,
+            password: md5(this.ruleForm.newPass)
+          };
+          this.changePwd(form).then(res => {
+            this.$message({
+              message: res.msg,
+              type: "success",
+              duration: 2000,
+              center: true
+            });
+            this.$emit("click", false);
+            this.resetForm();
+          });
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm() {
+      this.$refs.ruleForm.resetFields();
     },
     hanldeClose() {
-      this.$emit('click', false);
-      this.$refs.ruleForm.resetFields();
+      this.$emit("click", false);
+      this.resetForm();
     }
   }
 };

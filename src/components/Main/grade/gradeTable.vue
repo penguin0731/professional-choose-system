@@ -17,8 +17,18 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="success" size="mini">编辑</el-button>
-          <el-button @click="changeState(scope.row)" type="primary" size="mini">修改状态</el-button>
+          <el-button
+            v-if="showBtn.isEdit"
+            @click="handleClick(scope.row)"
+            type="success"
+            size="mini"
+          >编辑</el-button>
+          <el-button
+            v-if="showBtn.isEdit"
+            @click="changeState(scope.row)"
+            type="primary"
+            size="mini"
+          >修改状态</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -33,6 +43,7 @@ export default {
   components: {
     editForm
   },
+  props: ["gradeModule"],
   data() {
     return {
       multipleSelection: [],
@@ -40,8 +51,18 @@ export default {
         grade_id: "",
         grade_name: ""
       },
-      editFormVisible: false
+      editFormVisible: false,
+      showBtn: {
+        isEdit: false
+      }
     };
+  },
+  mounted() {
+    this.gradeModule[0].children.forEach(item => {
+      if (item.label == "年级修改") {
+        this.showBtn.isEdit = true;
+      }
+    });
   },
   computed: {
     ...mapState("grade", ["currentPage", "pageSize", "gradeList"])
@@ -60,7 +81,14 @@ export default {
         grade_id: row.grade_id,
         grade_state: row.grade_state == 1 ? 0 : 1
       };
-      this.updateGrade(params);
+      this.updateGrade(params).then(res => {
+        this.$message({
+          message: res.msg,
+          type: "success",
+          duration: 2000,
+          center: true
+        });
+      });
     },
     closeEditForm(close) {
       this.editFormVisible = close;

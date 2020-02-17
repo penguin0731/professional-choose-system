@@ -48,6 +48,17 @@ export default {
             }
             state.editableTabsValue = activeName;
             state.editableTabs = tabs.filter(tab => tab.name !== targetName);
+        },
+        resetTab(state) {
+            state.editableTabsValue = "myMain";
+            state.editableTabs = [
+                {
+                    label: "首页",
+                    name: "myMain",
+                    content: "首页内容",
+                },
+            ];
+            state.tabIndex = 1
         }
     },
     actions: {}

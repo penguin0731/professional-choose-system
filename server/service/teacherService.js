@@ -1,9 +1,10 @@
 const createConnection = require('../dao/dbutil');
+const md5 = require('md5');
 
 /**
  * 查询教职工总数
  */
-function count() {
+exports.count = async function() {
     return new Promise((res, rej) => {
         const conn = createConnection(); //创建连接
         conn.connect(); //打开连接
@@ -22,18 +23,16 @@ function count() {
  * page: 页码，从1开始
  * pageSize: 每页显示多少条数据
  */
-function findByPage(page, pageSize) {
+exports.findByPage = async function(page, pageSize) {
     return new Promise((res, rej) => {
         const conn = createConnection();
         conn.connect();
 
         const sql = `select
 						person.*,
-						department_name,
 						role_name
-					from person, department, role
-					where person.dept_id=department.department_id
-					    and person.role_id<>1
+					from person, role
+					where person.role_id<>1
 						and person.role_id<>2
 					    and person.role_id=role.role_id
 					limit ?,?`;
@@ -50,15 +49,15 @@ function findByPage(page, pageSize) {
  * 添加教职工
  * teachers: 存放添加教职工信息的数组
  */
-function addTeachers(teacher) {
+exports.addTeachers = async function(teacher) {
     return new Promise((res, rej) => {
         const conn = createConnection();
         conn.connect();
 
         for (const teach of teacher) {
             //执行sql语句，将teach中的信息加入到数据库
-            const sql = 'insert into person(`login_id`,`name`,`gender`,`phone`,`email`,`dept_id`,`role_id`) values(?,?,?,?,?,?,?)';
-            const params = [teach.login_id, teach.name, teach.gender, teach.phone, teach.email, teach.dept_id, 3];//为占位符(sql参数)提供数据
+            const sql = 'insert into person(`login_id`,`name`,`password`,`gender`,`phone`,`email`,`dept_id`,`role_id`) values(?,?,?,?,?,?,?)';
+            const params = [teach.login_id, teach.name, md5('123456'), teach.gender, teach.phone, teach.email, teach.dept_id, 3];//为占位符(sql参数)提供数据
             conn.query(sql, params, function(err, results) {
                 err ? rej(err) : res({msg: '添加成功'});
             }); //执行sql语句
@@ -72,7 +71,7 @@ function addTeachers(teacher) {
  * 删除教职工
  * teachers: 存放删除教职工的数组
  */
-function delTeachers(teachers) {
+exports.delTeachers = async function(teachers) {
     return new Promise((res, rej) => {
         var conn = createConnection();
         conn.connect();
@@ -91,7 +90,7 @@ function delTeachers(teachers) {
 /**
  *查询匹配的教职工总数
  */
-function searchCount(name) {
+exports.searchCount = async function(name) {
     return new Promise((res, rej) => {
         const conn = createConnection(); //创建连接
         conn.connect(); //打开连接
@@ -110,7 +109,7 @@ function searchCount(name) {
  * 查询教职工
  * name: 教职工名称
  */
-function searchTeachers(name, page, pageSize) {
+exports.searchTeachers = async function(name, page, pageSize) {
     return new Promise((res, rej) => {
         var conn = createConnection();
         conn.connect();
@@ -127,7 +126,7 @@ function searchTeachers(name, page, pageSize) {
 /**
  * 更新教职工
  */
-function updateTeacher(teacher) {
+exports.updateTeacher = async function(teacher) {
     return new Promise((res, rej) => {
         var conn = createConnection();
         conn.connect();
@@ -140,12 +139,3 @@ function updateTeacher(teacher) {
     });
 }
 
-module.exports = {
-    count,
-    findByPage,
-    addTeachers,
-    delTeachers,
-    searchCount,
-    searchTeachers,
-    updateTeacher,
-};
