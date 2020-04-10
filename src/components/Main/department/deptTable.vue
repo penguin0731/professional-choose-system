@@ -49,11 +49,8 @@ export default {
     };
   },
   mounted() {
-    // setTimeout(() => {
-    //   this.loading = false;
-    // }, 500);
     this.deptModule[0].children.forEach(item => {
-      if (item.label == "院系修改") {
+      if (item.name == "院系修改") {
         this.showBtn.isEdit = true;
       }
     });

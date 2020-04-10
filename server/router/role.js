@@ -108,8 +108,16 @@ router.get('/findCheckedModule', async function (request, response) {
  */
 router.post('/dispatchPower', async function (request, response) {
 	const role_resources = request.body.role_resources;
-	const result = await roleService.dispatchPower(role_resources);
-	response.send(result);
+	let result1, result2;
+	if(role_resources[0].length != 0) {
+		result1 = await roleService.dispatchPower(role_resources[0]);
+	}
+	if(role_resources[1].length != 0) {
+		result2 = await roleService.revokePower(role_resources[1]);
+	}
+	response.send({
+		msg: '修改成功'
+	});
 })
 
 module.exports = router;

@@ -37,11 +37,11 @@ exports.queryLoginUser = async function(login_id, role_id) {
         } else {
             sql = `select
                         person.*,
-                        department.department_name
+                        role.role_name
                     from
-                        person, department
+                        person, role
                     where
-                        person.dept_id=department.department_id
+                        person.role_id=role.role_id
                         and login_id=?`;
         }
         const params = [login_id];

@@ -1,5 +1,24 @@
 <template>
   <div>
+    <div class="tool-bar">
+      <div class="btn-group">
+        <el-button-group>
+          <el-button
+            v-if="showBtn.isAdd"
+            type="primary"
+            size="small"
+            @click="showProTaskForm(true)"
+          >
+            <i class="el-icon-plus"></i>
+            添加
+          </el-button>
+          <el-button v-if="showBtn.isDel" type="danger" size="small" @click="del">
+            <i class="el-icon-delete"></i>
+            删除
+          </el-button>
+        </el-button-group>
+      </div>
+    </div>
     <el-table
       border
       ref="multipleTable"
@@ -23,68 +42,173 @@
       <el-table-column align="center" prop="operation_username" label="用户" width="120"></el-table-column>
       <el-table-column align="center" prop="create_time" label="创建时间" width="160"></el-table-column>
       <el-table-column align="center" prop="update_time" label="更新时间" width="160"></el-table-column>
-      <el-table-column fixed="right" align="center" label="操作" min-width="100">
+      <el-table-column fixed="right" align="center" label="操作" min-width="200">
         <template slot-scope="scope">
           <el-button
             v-if="showBtn.isEdit"
-            @click="handleClick(scope.row)"
+            @click="showProTaskForm(true, scope.row, $event)"
             type="success"
             size="mini"
           >编辑</el-button>
+          <el-button
+            v-if="showBtn.isShowDetail"
+            @click="toTaskDetail(scope.row)"
+            type="primary"
+            size="mini"
+          >选报详情</el-button>
+          <el-button
+            v-if="!showBtn.isEdit && !showBtn.isShowDetail"
+            type="info"
+            size="mini"
+            disabled
+          >无操作权限</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <edit-form :editFormVisible="editFormVisible" :editForm="editFormData" @close="closeEditForm" />
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[1, 2, 3, 4]"
+        :page-size="pageSize"
+        :total="count"
+        layout="total, sizes, prev, pager, next, jumper"
+      ></el-pagination>
+    </div>
+    <proTaskForm
+      :proTaskFormVisible="proTaskFormVisible"
+      :proTaskForm="proTaskFormData"
+      @close="showProTaskForm"
+      :formTitle="formTitle"
+    />
   </div>
 </template>
 
 <script>
-import editForm from "./editForm";
+import proTaskForm from "./proTaskForm";
 import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   components: {
-    editForm
+    proTaskForm
   },
-  props: ["taskModule"],
   data() {
     return {
-      editFormData: {
+      proTaskFormVisible: false,
+      proTaskFormData: {
         start_time: "",
         end_time: "",
         grade_name: "",
         major_name: ""
       },
-      editFormVisible: false,
+      formTitle: "",
+      taskModule: null,
       showBtn: {
-        isEdit: false
+        isAdd: false,
+        isDel: false,
+        isEdit: false,
+        isShowDetail: false
       }
     };
   },
-  mounted() {
-    this.taskModule[0].children.forEach(item => {
-      if (item.label == "修改方向选报任务") {
-        this.showBtn.isEdit = true;
+  created() {
+    this.taskModule = this.showModuleList.filter(item => {
+      if (item.name == "方向选报任务管理") {
+        return true;
+      } else {
+        return false;
       }
     });
+    if (this.taskModule[0].children) {
+      this.taskModule[0].children.forEach(item => {
+        switch (item.name) {
+          case "添加方向选报任务":
+            this.showBtn.isAdd = true;
+            break;
+          case "删除方向选报任务":
+            this.showBtn.isDel = true;
+            break;
+          case "修改方向选报任务":
+            this.showBtn.isEdit = true;
+            break;
+          case "选报详情":
+            this.showBtn.isShowDetail = true;
+            break;
+          default:
+            break;
+        }
+      });
+    }
+  },
+  mounted() {
+    this.findByPage({ page: this.currentPage, pageSize: this.pageSize });
     this.findGradeList({ page: 1, pageSize: 9999 });
     this.findMajorList({ page: 1, pageSize: 9999 });
   },
   computed: {
-    ...mapState("task", ["taskList"])
+    ...mapState("task", [
+      "multipleSelection",
+      "currentPage",
+      "pageSize",
+      "count",
+      "taskList"
+    ]),
+    ...mapState("role", ["showModuleList"])
   },
   methods: {
-    ...mapMutations("task", ["setSelection"]),
+    ...mapMutations("task", ["setPage", "setPageSize", "setSelection"]),
+    ...mapMutations("taskDetail", ["setTaskId"]),
+    ...mapActions("task", ["findByPage", "delTasks"]),
     ...mapActions("grade", {
       findGradeList: "findByPage"
     }),
     ...mapActions("major", {
       findMajorList: "findByPage"
     }),
+    handleSizeChange(val) {
+      this.setPageSize(val);
+    },
+    handleCurrentChange(val) {
+      this.setPage(val);
+    },
     handleSelectionChange(val) {
       this.setSelection(val);
     },
-    closeEditForm(close) {
-      this.editFormVisible = close;
+    showProTaskForm(isShow, row, e) {
+      this.proTaskFormVisible = isShow;
+      e ? (this.formTitle = "编辑") : (this.formTitle = "添加");
+      if (row) {
+        this.proTaskFormData = { ...row };
+      }
+    },
+    // 展示任务详情模块
+    toTaskDetail(row) {
+      this.setTaskId(row.task_id);
+      this.$emit("show", false);
+    },
+    del() {
+      const length = this.multipleSelection.length;
+      this.$confirm(`是否删除选中的${length}个任务?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.delTasks(this.multipleSelection).then(res => {
+            this.$message({
+              message: res.msg,
+              type: "success",
+              duration: 2000,
+              center: true
+            });
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     handleClick(row) {
       this.editFormVisible = true;

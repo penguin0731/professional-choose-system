@@ -9,11 +9,10 @@ const router = express.Router(); //得到一个路由对象
  * 分页查询专业
  * api: /api/direction/findByPage
  * methods: get
- * 请求参数: page        type:number      查询第几页,默认为1
+ * 请求参数: id          type:number      方向id
+ * 			page        type:number      查询第几页,默认为1
  *          pageSize    type:number      每页展示的数量,默认为10
  */
-
-
 router.get('/findByPage', async function(request, response) {
 	const id = request.query.id;
 	//获取page 和 pageSize

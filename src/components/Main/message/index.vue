@@ -51,14 +51,14 @@ export default {
   },
   created() {
     this.msgModule = this.showModuleList.filter(item => {
-      if (item.label == "公告管理") {
+      if (item.name == "公告管理") {
         return true;
       } else {
         return false;
       }
     });
     this.msgModule[0].children.forEach(item => {
-      if (item.label == "公告添加") {this.showBtn.isAdd = true;}
+      if (item.name == "公告添加") {this.showBtn.isAdd = true;}
     });
   },
   mounted() {

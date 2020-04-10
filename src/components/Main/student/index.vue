@@ -94,21 +94,18 @@ export default {
   },
   created() {
     this.stuModule = this.showModuleList.filter(item => {
-      if (item.label == "学生管理") {
+      if (item.name == "学生管理") {
         return true;
       } else {
         return false;
       }
     });
     this.stuModule[0].children.forEach(item => {
-      if (item.label == "学生添加") {
-        this.showBtn.isAdd = true;
-      }
-      if (item.label == "学生删除") {
-        this.showBtn.isDel = true;
-      }
-      if (item.label == "学生导入") {
-        this.showBtn.isImport = true;
+      switch(item.name) {
+        case "学生添加": this.showBtn.isAdd = true;break;
+        case "学生删除": this.showBtn.isDel = true;break;
+        case "学生导入": this.showBtn.isImport = true;break;
+        default: break;
       }
     });
   },

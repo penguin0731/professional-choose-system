@@ -50,14 +50,14 @@ export default {
   },
   created() {
     this.gradeModule = this.showModuleList.filter(item => {
-      if (item.label == "年级管理") {
+      if (item.name == "年级管理") {
         return true;
       } else {
         return false;
       }
     });
     this.gradeModule[0].children.forEach(item => {
-      if (item.label == "年级添加") {this.showBtn.isAdd = true;}
+      if (item.name == "年级添加") {this.showBtn.isAdd = true;}
     });
   },
   mounted() {

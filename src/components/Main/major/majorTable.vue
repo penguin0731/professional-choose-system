@@ -134,27 +134,20 @@ export default {
   },
   created() {
     this.majorModule = this.showModuleList.filter(item => {
-      if (item.label == "专业管理") {
+      if (item.name == "专业管理") {
         return true;
-      } else if (item.label == "方向管理") {
-        this.showBtn.isShowDirect = true;
-        return false;
       } else {
         return false;
       }
     });
     this.majorModule[0].children.forEach(item => {
-      if (item.label == "专业添加") {
-        this.showBtn.isAdd = true;
-      }
-      if (item.label == "专业删除") {
-        this.showBtn.isDel = true;
-      }
-      if (item.label == "专业导入") {
-        this.showBtn.isImport = true;
-      }
-      if (item.label == "专业修改") {
-        this.showBtn.isEdit = true;
+      switch(item.name) {
+        case "专业添加": this.showBtn.isAdd = true; break;
+        case "专业删除": this.showBtn.isDel = true; break;
+        case "专业导入": this.showBtn.isImport = true; break;
+        case "专业修改": this.showBtn.isEdit = true; break;
+        case "方向管理": this.showBtn.isShowDirect = true; break;
+        default: break;
       }
     });
   },

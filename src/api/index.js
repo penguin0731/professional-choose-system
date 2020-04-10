@@ -3,6 +3,7 @@ import teacher from './teacher';
 import major from './major';
 import direction from './direction';
 import task from './proTask';
+import taskDetail from './taskDetail';
 import taskSelected from './taskSelected';
 import grade from './grade';
 import department from './department';
@@ -17,6 +18,7 @@ let api = {
     major,
     direction,
     task,
+    taskDetail,
     taskSelected,
     grade,
     department,

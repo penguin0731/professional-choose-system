@@ -29,6 +29,7 @@
             type="primary"
             size="mini"
           >修改状态</el-button>
+          <el-button v-else type="info" size="mini" disabled>无操作权限</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -59,7 +60,7 @@ export default {
   },
   mounted() {
     this.gradeModule[0].children.forEach(item => {
-      if (item.label == "年级修改") {
+      if (item.name == "年级修改") {
         this.showBtn.isEdit = true;
       }
     });

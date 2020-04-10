@@ -90,21 +90,18 @@ export default {
   },
   created() {
     this.teachModule = this.showModuleList.filter(item => {
-      if (item.label == "教职工管理") {
+      if (item.name == "教职工管理") {
         return true;
       } else {
         return false;
       }
     });
     this.teachModule[0].children.forEach(item => {
-      if (item.label == "教职工添加") {
-        this.showBtn.isAdd = true;
-      }
-      if (item.label == "教职工删除") {
-        this.showBtn.isDel = true;
-      }
-      if (item.label == "教职工导入") {
-        this.showBtn.isImport = true;
+      switch(item.name) {
+        case "教职工添加": this.showBtn.isAdd = true;break;
+        case "教职工删除": this.showBtn.isDel = true;break;
+        case "教职工导入": this.showBtn.isImport = true;break;
+        default: break;
       }
     });
   },

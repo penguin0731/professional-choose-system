@@ -13,10 +13,11 @@
         <el-form-item>
           <el-tree
             ref="tree"
-            node-key="id"
+            node-key="resource_id"
             :data="moduleList"
             :default-checked-keys="checkedList"
             :expand-on-click-node="false"
+            :props="defaultProps"
             @check="nodeCheck"
             check-strictly
             show-checkbox
@@ -36,8 +37,19 @@
 import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   props: ["dispatchFormVisible", "role_id"],
+  data() {
+    return {
+      defaultProps: {
+        children: "children",
+        label: "name"
+      }
+    };
+  },
   computed: {
-    ...mapState("role", ["moduleList", "checkedList"])
+    ...mapState("role", ["moduleList", "checkedList"]),
+    checkedNodesArr() {
+      return this.$refs.tree.getCheckedNodes().map(item => item.resource_id);
+    }
   },
   methods: {
     ...mapMutations("role", ["setCheckedList"]),
@@ -50,26 +62,47 @@ export default {
     },
     nodeCheck(data) {
       //若勾选子节点,则自动勾选父节点
-      if (!data.parent_id) return;
-      this.$refs.tree.setChecked(data.parent_id, true);
+      if (!this.checkedNodesArr.includes(data.resource_id) && data.resource_parent_id == 1) {
+        data.children.forEach(item => {
+          this.$refs.tree.setChecked(item.resource_id, false);
+        });
+      };
+      this.$refs.tree.setChecked(data.resource_parent_id, true);
     },
     submit() {
-      const checkedNodes = this.$refs.tree.getCheckedNodes();
-      const form = checkedNodes.map(item => {
-        return {
-          ...item,
-          role_id: this.role_id
-        };
-      });
-      this.dispatchPower(form).then(res => {
-        this.$message({
-          message: res.msg,
-          type: "success",
-          duration: 2000,
-          center: true
+      const form = this.getRoleResourceList();
+      if (form[0].length != 0 || form[1].length != 0) {
+        this.dispatchPower(form).then(res => {
+          this.$message({
+            message: res.msg,
+            type: "success",
+            duration: 2000,
+            center: true
+          });
         });
-      });
+      }
       this.hanldeClose();
+    },
+    getRoleResourceList() {
+      // const checkedNodes = this.$refs.tree.getCheckedNodes();
+      // const checkedNodesArr = checkedNodes.map(item => item.id);
+      let addPowerForm = this.checkedNodesArr.filter(item => {
+        //获取新增的权限
+        if (!this.checkedList.includes(item)) return true;
+      });
+      let delPowerForm = this.checkedList.filter(item => {
+        //获取撤销的权限
+        if (!this.checkedNodesArr.includes(item)) return true;
+      });
+      addPowerForm = addPowerForm.map(item => ({
+        id: item,
+        role_id: this.role_id
+      }));
+      delPowerForm = delPowerForm.map(item => ({
+        id: item,
+        role_id: this.role_id
+      }));
+      return [addPowerForm, delPowerForm];
     }
   }
 };

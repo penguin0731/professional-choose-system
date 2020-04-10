@@ -1,32 +1,29 @@
 import api from '@/api';
-import { Message } from 'element-ui';
 
-function sonInDad(arr) {
-    const father = [];
-    const son = [];
-    arr.forEach(item => {
-        if (item.resource_type == 1) {
-            father.push({
-                id: item.resource_id,
-                label: item.name,
-                children: []
-            });
-        } else {
-            son.push({
-                id: item.resource_id,
-                label: item.name,
-                parent_id: item.resource_parent_id
-            })
-        }
-    });
-    son.forEach(item => {
-        father.forEach(i => {
-            if (item.parent_id == i.id) {
-                i.children.push(item);
+function jsonToTree(list) {
+    let idObj = {};
+    let treeList = [];
+    for (let i = 0; i < list.length; i++) {
+        // list[i] = {...list[i], label: list[i].name};
+        // delete list[i].name;
+        const item = list[i];
+        idObj[item.resource_id] = item;
+    }
+    for (let j = 0; j < list.length; j++) {
+        const item = list[j];
+        const itemParent = idObj[item.resource_parent_id];
+        if(itemParent) {
+            if(itemParent.hasOwnProperty('children')) {
+                itemParent.children.push(item);
+            }else {
+                itemParent.children = [];
+                itemParent.children.push(item);
             }
-        });
-    });
-    return father;
+        }else {
+            treeList.push(item);
+        }
+    }
+    return treeList;
 }
 
 export default {
@@ -59,14 +56,15 @@ export default {
             state.teachRoleList = data;
         },
         setModuleList(state, data) {
-            state.moduleList = sonInDad(data);
+            state.moduleList = jsonToTree(data);
         },
         setCheckedList(state, data) {
             const newData = data.map(item => item.resource_id);
             state.checkedList = newData;
         },
         setShowModuleList(state, data) {
-            state.showModuleList = sonInDad(data);
+            state.showModuleList = jsonToTree(data);
+            console.log(state.showModuleList);
         }
     },
     actions: {

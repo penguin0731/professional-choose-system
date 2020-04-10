@@ -13,13 +13,24 @@
       <el-table-column align="center" prop="role_name" label="角色名称" width="160"></el-table-column>
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button v-if="showBtn.isEdit" @click="handleEdit(scope.row)" type="success" size="mini">编辑</el-button>
+          <el-button
+            v-if="showBtn.isEdit"
+            @click="handleEdit(scope.row)"
+            type="success"
+            size="mini"
+          >编辑</el-button>
           <el-button
             v-if="user.role_id == 2"
             @click="handleClick(scope.row)"
             type="primary"
             size="mini"
           >分配权限</el-button>
+          <el-button
+            v-if="!showBtn.isEdit && user.role_id != 2"
+            type="info"
+            size="mini"
+            disabled
+          >无操作权限</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -60,7 +71,7 @@ export default {
   },
   mounted() {
     this.roleModule[0].children.forEach(item => {
-      if (item.label == "角色修改") {
+      if (item.name == "角色修改") {
         this.showBtn.isEdit = true;
       }
     });

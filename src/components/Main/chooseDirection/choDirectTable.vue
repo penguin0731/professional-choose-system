@@ -52,7 +52,6 @@ export default {
       this.chooseFormVisible = isShow;
     },
     handleClick(row) {
-      // console.log(row);
       const now = new Date().format("yyyy-MM-dd hh:mm:ss");
       if (now < row.start_time) {
         this.$message({

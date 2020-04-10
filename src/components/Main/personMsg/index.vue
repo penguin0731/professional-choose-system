@@ -26,8 +26,8 @@
       </el-input>
     </div>
     <div>
-      <el-input v-if="user.role_id!=1" :value="user.department_name" :disabled="true">
-        <template slot="prepend">{{'所属院系'}}</template>
+      <el-input v-if="user.role_id==3" :value="user.role_name" :disabled="true">
+        <template slot="prepend">{{'身份'}}</template>
       </el-input>
     </div>
     <div>

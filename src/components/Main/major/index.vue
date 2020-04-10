@@ -18,9 +18,6 @@ export default {
       isShowMajor: true,
     };
   },
-  mounted() {
-
-  },
   methods: {
     show(val) {
       this.isShowMajor = val;

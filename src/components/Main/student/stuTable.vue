@@ -71,7 +71,7 @@ export default {
   },
   mounted() {
     this.stuModule[0].children.forEach(item => {
-      if (item.label == "学生修改") {
+      if (item.name == "学生修改") {
         this.showBtn.isEdit = true;
       }
     });

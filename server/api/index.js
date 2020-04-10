@@ -3,6 +3,7 @@ const student = require("../router/student"),
       major = require('../router/major'),
       direction = require('../router/direction'),
       task = require('../router/professionalTask'),
+      taskDetail = require('../router/taskDetail'),
       taskSelected = require('../router/taskSelected'),
       grade = require('../router/grade'),
       department = require('../router/department'),
@@ -19,6 +20,7 @@ module.exports = function (app) {
   app.use("/api/major", major);
   app.use("/api/direction", direction);
   app.use("/api/task", task);
+  app.use("/api/taskDetail", taskDetail);
   app.use("/api/taskSelected", taskSelected);
   app.use("/api/grade", grade);
   app.use("/api/department", department);

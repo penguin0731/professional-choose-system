@@ -110,7 +110,7 @@ export default {
             });
           });
         }
-        this.$emit("close", false);
+        this.hanldeClose();
       });
     }
   }

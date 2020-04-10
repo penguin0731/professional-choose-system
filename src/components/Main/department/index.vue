@@ -50,14 +50,14 @@ export default {
   },
   created() {
     this.deptModule = this.showModuleList.filter(item => {
-      if (item.label == "院系管理") {
+      if (item.name == "院系管理") {
         return true;
       } else {
         return false;
       }
     });
     this.deptModule[0].children.forEach(item => {
-      if (item.label == "院系添加") {this.showBtn.isAdd = true;}
+      if (item.name == "院系添加") {this.showBtn.isAdd = true;}
     });
   },
   mounted() {

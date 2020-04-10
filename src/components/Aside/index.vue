@@ -133,10 +133,11 @@ export default {
       ];
       if (!this.showModuleList) return;
       arr.forEach(item => {
-        item.isShow = this.showModuleList.some(i => i.label == item.label);
+        item.isShow = this.showModuleList.some(i => i.name == item.label);
       });
       return arr;
     },
+    // 信息查询
     searchMsgArr() {
       let arr = [
         {
@@ -168,7 +169,7 @@ export default {
           item.isShow = false;
         }
         if (item.label == "选报方向") {
-          item.isShow = this.showModuleList.some(i => i.label == item.label);
+          item.isShow = this.showModuleList.some(i => i.name == item.label);
         }
       });
       return arr;

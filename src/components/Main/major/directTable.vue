@@ -60,6 +60,7 @@
             type="success"
             size="mini"
           >编辑</el-button>
+          <el-button v-else type="info" size="mini" disabled>无操作权限</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -115,23 +116,32 @@ export default {
   },
   created() {
     this.directModule = this.showModuleList.filter(item => {
-      if (item.label == "方向管理") {
+      if (item.name == "专业管理") {
         return true;
       } else {
         return false;
       }
     });
-    this.directModule[0].children.forEach(item => {
-      if (item.label == "方向添加") {
-        this.showBtn.isAdd = true;
-      }
-      if (item.label == "方向删除") {
-        this.showBtn.isDel = true;
-      }
-      if (item.label == "方向修改") {
-        this.showBtn.isEdit = true;
+    this.directModule = this.directModule[0].children.filter(item => {
+      if (item.name == "方向管理") {
+        return true;
+      } else {
+        return false;
       }
     });
+    if (this.directModule[0].children) {
+      this.directModule[0].children.forEach(item => {
+        if (item.name == "方向添加") {
+          this.showBtn.isAdd = true;
+        }
+        if (item.name == "方向删除") {
+          this.showBtn.isDel = true;
+        }
+        if (item.name == "方向修改") {
+          this.showBtn.isEdit = true;
+        }
+      });
+    }
   },
   mounted() {
     this.findByPage({

@@ -50,14 +50,14 @@ export default {
   },
   created() {
     this.roleModule = this.showModuleList.filter(item => {
-      if (item.label == "角色管理") {
+      if (item.name == "角色管理") {
         return true;
       } else {
         return false;
       }
     });
     this.roleModule[0].children.forEach(item => {
-      if (item.label == "角色添加") {this.showBtn.isAdd = true;}
+      if (item.name == "角色添加") {this.showBtn.isAdd = true;}
     });
   },
   mounted() {

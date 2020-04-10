@@ -67,7 +67,7 @@ export default {
   },
   mounted() {
     this.teachModule[0].children.forEach(item => {
-      if (item.label == "教职工修改") {
+      if (item.name == "教职工修改") {
         this.showBtn.isEdit = true;
       }
     });

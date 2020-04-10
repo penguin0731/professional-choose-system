@@ -178,7 +178,24 @@ exports.dispatchPower = async function(role_resource) {
 			const sql = 'insert into role_resource(`role_id`, `resource_id`) values(?,?)';
 			const params = [rs.role_id, rs.id];
 			conn.query(sql, params, function (err, results) {
-				err ? rej(err) : res({msg: '修改成功'});
+				err ? rej(err) : res(results);
+			});
+		}
+
+		conn.end();
+	})
+}
+
+exports.revokePower = async function (role_resource) {
+	return new Promise((res, rej) => {
+		const conn = createConnection();
+		conn.connect();
+
+		for(const rs of role_resource) {
+			const sql = 'delete from role_resource where role_id=? and resource_id=?';
+			const params = [rs.role_id, rs.id];
+			conn.query(sql, params, function (err, results) {
+				err ? rej(err) : res(results);
 			});
 		}
 
