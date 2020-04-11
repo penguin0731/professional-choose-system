@@ -1,31 +1,40 @@
 <template>
   <div class="login">
-    <div class="login_box">
-      <div class="login_logo"></div>
-      <el-form :model="loginForm" :rules="rules" ref="loginForm" class="login_form">
-        <el-form-item prop="login_id">
-          <el-input
-            v-model="loginForm.login_id"
-            autocomplete="off"
-            prefix-icon="el-icon-user"
-            placeholder="请输入用户名"
-          ></el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            type="password"
-            v-model="loginForm.password"
-            autocomplete="off"
-            prefix-icon="el-icon-lock"
-            placeholder="请输入密码"
-            @keyup.enter.native="submitForm"
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <span v-show="isLogin" style="color: #F56C6C">用户名或密码错误！</span>
-          <el-button class="login_btn" type="primary" @click.stop="submitForm($event)" >登录</el-button>
-        </el-form-item>
-      </el-form>
+    <div class="loginContainer">
+      <div class="header">
+        <div class="header_main">
+          <div class="logo"></div>
+        </div>
+      </div>
+      <div class="login_main">
+        <div class="login_box">
+          <h2>专业方向选报系统</h2>
+          <el-form :model="loginForm" :rules="rules" ref="loginForm" class="login_form">
+            <el-form-item prop="login_id">
+              <el-input
+                v-model="loginForm.login_id"
+                autocomplete="off"
+                prefix-icon="el-icon-user"
+                placeholder="请输入用户名"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                type="password"
+                v-model="loginForm.password"
+                autocomplete="off"
+                prefix-icon="el-icon-lock"
+                placeholder="请输入密码"
+                @keyup.enter.native="submitForm"
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <span v-show="isLogin" style="color: #F56C6C">用户名或密码错误！</span>
+              <el-button class="login_btn" type="primary" @click.stop="submitForm($event)">登录</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -63,8 +72,8 @@ export default {
     };
   },
   methods: {
-    ...mapMutations('loginUser', ['setUser']),
-    ...mapActions('loginUser', ['queryUserByLoginId']),
+    ...mapMutations("loginUser", ["setUser"]),
+    ...mapActions("loginUser", ["queryUserByLoginId"]),
     submitForm() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
