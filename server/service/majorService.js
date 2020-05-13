@@ -126,10 +126,13 @@ exports.updateMajor = async function(major) {
     return new Promise((res, rej) => {
         const conn = createConnection();
         conn.connect();
+
+        console.log(major);
         const sql = 'update major set ? where major_id=\'';
         conn.query(sql + major.major_id + '\'', major, function(err, results) {
             err ? rej(err) : res({msg: '更新成功'});
         });
+
         conn.end();
     });
 }

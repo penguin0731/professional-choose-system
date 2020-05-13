@@ -42,7 +42,7 @@ const direction = {
         return result.data;
     },
     async updateDirection(params) {
-        const data = qs.stringify(params);
+        const data = JSON.stringify(params);
         const result = await axios({
             url: url.updateDirection,
             method: 'post',

@@ -44,6 +44,7 @@ export default {
             commit('setMajorList', result.data);
         },
         async updateMajor({ state, dispatch }, editForm) {
+            console.log(editForm);
             const result = await api.major.updateMajor(editForm);
             dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
             return result;

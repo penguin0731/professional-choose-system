@@ -92,10 +92,11 @@ export default {
         const formData = {
           ...this.directForm,
           major_id: this.major_id,
-          create_time: new Date().format("yyyy-MM-dd hh:mm:ss"),
           operation_username: this.user.name
         };
+        delete formData.grade_name;
         if (this.formTitle == "编辑") {
+          formData.update_time = new Date().format("yyyy-MM-dd hh:mm:ss");
           this.updateDirection(formData).then(res => {
             this.$message({
               message: res.msg,
@@ -105,6 +106,7 @@ export default {
             });
           });
         } else if (this.formTitle == "添加") {
+          formData.create_time = new Date().format("yyyy-MM-dd hh:mm:ss");
           this.addDirection(formData).then(res => {
             this.$message({
               message: res.msg,

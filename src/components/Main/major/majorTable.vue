@@ -57,7 +57,7 @@
       <el-table-column align="center" prop="department_name" label="专业院系" width="120"></el-table-column>
       <el-table-column align="center" prop="major_detail" label="专业介绍" min-width="300">
         <template slot-scope="scope">
-          <el-popover width="500" trigger="hover" :content="scope.row.major_detail" placement="top">
+          <el-popover width="500" trigger="click" :content="scope.row.major_detail" placement="top">
             <div slot="reference" class="nowrap">{{ scope.row.major_detail }}</div>
           </el-popover>
         </template>
@@ -141,13 +141,24 @@ export default {
       }
     });
     this.majorModule[0].children.forEach(item => {
-      switch(item.name) {
-        case "专业添加": this.showBtn.isAdd = true; break;
-        case "专业删除": this.showBtn.isDel = true; break;
-        case "专业导入": this.showBtn.isImport = true; break;
-        case "专业修改": this.showBtn.isEdit = true; break;
-        case "方向管理": this.showBtn.isShowDirect = true; break;
-        default: break;
+      switch (item.name) {
+        case "专业添加":
+          this.showBtn.isAdd = true;
+          break;
+        case "专业删除":
+          this.showBtn.isDel = true;
+          break;
+        case "专业导入":
+          this.showBtn.isImport = true;
+          break;
+        case "专业修改":
+          this.showBtn.isEdit = true;
+          break;
+        case "方向管理":
+          this.showBtn.isShowDirect = true;
+          break;
+        default:
+          break;
       }
     });
   },
@@ -188,9 +199,11 @@ export default {
     // 展示专业表单
     showMajorForm(isShow, row, e) {
       this.majorFormVisible = isShow;
-      e ? (this.formTitle = "编辑") : (this.formTitle = "添加");
-      if (row) {
+      if(e) {
+        this.formTitle = "编辑";
         this.majorForm = { ...row };
+      }else {
+        this.formTitle = "添加";
       }
     },
     // 展示方向管理模块

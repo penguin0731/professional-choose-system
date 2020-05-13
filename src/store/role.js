@@ -64,7 +64,6 @@ export default {
         },
         setShowModuleList(state, data) {
             state.showModuleList = jsonToTree(data);
-            console.log(state.showModuleList);
         }
     },
     actions: {

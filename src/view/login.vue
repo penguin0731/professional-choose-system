@@ -35,6 +35,7 @@
           </el-form>
         </div>
       </div>
+      <div class="footer">CopyRight @ 2016-2020</div>
     </div>
   </div>
 </template>

@@ -127,12 +127,13 @@ exports.updateDirection = async function(direction) {
 		const conn = createConnection();
 		conn.connect();
 
+
 		if(direction.constructor == Object) {
 			const sql = 'update direction set ? where direction_id=\'';
 			conn.query(sql + direction.direction_id + '\'', direction, function(err, results) {
 				err ? rej(err) : res({msg: '更新成功'});
 			});
-		}else if(direction.constructor == Array) {
+		}else if(direction.constructor == Array) { //批量更新选报人数
 			for(const direct of direction) {
 				const sql = 'update direction set ? where direction_id=\'';
 				conn.query(sql + direct.direction_id + '\'', direct, function(err, results) {

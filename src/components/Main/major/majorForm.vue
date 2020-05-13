@@ -35,7 +35,7 @@
             type="textarea"
             v-model="majorForm.major_detail"
             :rows="8"
-            maxlength="300"
+            maxlength="400"
             show-word-limit
           ></el-input>
         </el-form-item>
@@ -90,8 +90,13 @@ export default {
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
+        const formData = {
+          ...this.majorForm
+        };
+        delete formData.department_name;
+        delete formData.major_name;
         if (this.formTitle == "编辑") {
-          this.updateMajor(this.majorForm).then(res => {
+          this.updateMajor(formData).then(res => {
             this.$message({
               message: res.msg,
               type: "success",
@@ -100,7 +105,8 @@ export default {
             });
           });
         } else if (this.formTitle == "添加") {
-          const arr = [{ ...this.majorForm, create_username: this.user.name }];
+          formData.create_username = this.user.name;
+          const arr = [formData];
           this.addMajors(arr).then(res => {
             this.$message({
               message: res.msg,

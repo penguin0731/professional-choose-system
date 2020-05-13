@@ -41,7 +41,7 @@ const major = {
         return result.data;
     },
     async updateMajor(params) {
-        const data = qs.stringify(params);
+        const data = JSON.stringify(params);
         const result = await axios({
             url: url.updateMajor,
             method: 'post',

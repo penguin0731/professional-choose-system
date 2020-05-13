@@ -83,7 +83,6 @@ export default {
       }
       this.$refs.chooseForm.validate(valid => {
         if (!valid) return;
-        console.log(this.chooseForm);
         if (this.chooseForm.id == "") {
           form = {
             task_id: this.chooseForm.task_id,
@@ -97,7 +96,6 @@ export default {
             direction_id: this.chooseForm.direction_id
           };
         }
-        console.log(form);
         this.selectedDirect(form).then(res => {
           this.$message({
             message: res.msg,

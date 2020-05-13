@@ -1,5 +1,4 @@
 import api from '@/api';
-import { Message } from 'element-ui';
 
 function formatSelectedTasks(data) {
     let newData;

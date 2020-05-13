@@ -39,9 +39,11 @@
           <el-popover
             width="500"
             trigger="click"
-            :content="scope.row.direction_detail"
             placement="top"
           >
+            <div v-for="item in (scope.row.direction_detail.split('\n'))" :key="item" class="text item">
+              {{ item }}
+            </div>
             <div slot="reference" class="nowrap">{{ scope.row.direction_detail }}</div>
           </el-popover>
         </template>
@@ -56,7 +58,7 @@
         <template slot-scope="scope">
           <el-button
             v-if="showBtn.isEdit"
-            @click="showDirectForm(true, scope.row)"
+            @click="showDirectForm(true, scope.row, $event)"
             type="success"
             size="mini"
           >编辑</el-button>
@@ -189,10 +191,13 @@ export default {
       this.setDirectionList(null);
       this.setLoading(true);
     },
-    showDirectForm(isShow, row) {
+    showDirectForm(isShow, row, e) {
       this.directFormVisible = isShow;
-      if (row) {
+      if(e) {
+        this.formTitle = "编辑";
         this.directForm = { ...row };
+      }else {
+        this.formTitle = "添加"; 
       }
     }
   }

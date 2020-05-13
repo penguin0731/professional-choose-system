@@ -74,6 +74,7 @@ router.get('/searchMajors', async function(request, response) {
  */
 router.post('/updateMajor', async function(request, response) {
     const major = request.body;
+    console.log(major);
     const result = await majService.updateMajor(major);
     response.send(result);
 });

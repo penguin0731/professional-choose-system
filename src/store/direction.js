@@ -78,7 +78,7 @@ export default {
         },
         async updateDirection({ state, dispatch }, editForm) {
             const result = await api.direction.updateDirection(editForm);
-            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            dispatch('findByPage', { id: state.major_id, page: state.currentPage, pageSize: state.pageSize });
             return result;
         },
         async findDirectByUser({ commit }, form) {
