@@ -28,7 +28,7 @@ const major = {
         const data = JSON.stringify(params);
         const result = await axios({
             url: url.delMajors,
-            method: 'delete',
+            method: 'post',
             headers: {
                 "Content-Type": 'application/json; charset=UTF-8'
             },

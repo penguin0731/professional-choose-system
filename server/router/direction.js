@@ -33,7 +33,7 @@ router.get('/findByPage', async function(request, response) {
  * direction      {major_id: '111',grade_id: '111', ...}
  */
 router.post('/addDirection', async function(request, response) {
-	const direction = request.body;
+	const direction = request.body.direction;
 	const result = await directService.addDirection(direction);
 	response.send(result);
 });
@@ -45,7 +45,7 @@ router.post('/addDirection', async function(request, response) {
  * 请求参数: directions    array   [{},{}]   方向数组
  * majors[item]       {major_id: xxx}
  */
-router.delete('/delDirections', async function(request, response) {
+router.post('/delDirections', async function(request, response) {
 	const directions = request.body.directions;
 	const result = await directService.delDirections(directions);
 	response.send(result);

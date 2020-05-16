@@ -113,7 +113,7 @@ export default {
               return {
                 login_id: item["学号"] ? item["学号"] + "" : "",
                 name: item["姓名"] ? item["姓名"] : "",
-                gender: item["性别"] ? (item["性别"] == "男" ? 0 : 1) : "",
+                gender: item["性别"] ? (item["性别"] == "男" ? 0 : item["性别"] == "女" ? 1 : -1) : "",
                 classes: item["班级"] ? item["班级"] : "",
                 phone: item["联系电话"] ? item["联系电话"] : "",
                 email: item["邮箱"] ? item["邮箱"] : ""

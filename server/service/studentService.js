@@ -114,7 +114,16 @@ exports.searchStudents = async function(name, page, pageSize) {
 		const conn = createConnection();
 		conn.connect();
 
-		const sql = 'select * from person where role_id=1 and name like ? limit ?,?';
+		const sql = `select 
+						person.*, 
+						grade.grade_name, 
+						major.major_name 
+					from person, grade, major
+					where role_id=1 
+					and person.grade_id=grade.grade_id
+					and person.major_id=major.major_id 
+					and name like ? 
+					limit ?,?`;
 		const params = ['%' + name + '%', (page - 1) * pageSize, pageSize];
 		conn.query(sql, params, function(err, results) {
 			err ? rej(err) : res(results);

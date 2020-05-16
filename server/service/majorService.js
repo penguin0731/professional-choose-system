@@ -8,7 +8,7 @@ exports.count = async function() {
         const conn = createConnection(); //创建连接
         conn.connect(); //打开连接
 
-        const sql = 'select count(*) as val from major';
+        const sql = 'select count(*) as val from major where delete_flag=1';
         conn.query(sql, function(err, results) {    //执行sql语句
             err ? rej(err) : res(results[0].val);
         });
@@ -32,6 +32,7 @@ exports.findByPage = async function(page, pageSize) {
                         department.department_name 
                      from major, department 
                      where major.department_id=department.department_id 
+                     and delete_flag=1
                      limit ?,?`;
         const params = [(page - 1) * pageSize, +pageSize]; //为占位符(sql参数)提供数据
         conn.query(sql, params, function(err, results) {
@@ -74,7 +75,7 @@ exports.delMajors = async function(majors) {
         conn.connect();
 
         for (const maj of majors) {
-            const sql = 'delete from major where major_id=?';
+            const sql = 'update major set delete_flag=0 where major_id=?';
             conn.query(sql, [maj.major_id], function(err, results) {
                 err ? rej(err) : res({msg: '删除成功'});
             }); //执行sql语句
@@ -110,8 +111,12 @@ exports.searchMajors = async function(major_name, page, pageSize) {
         const conn = createConnection();
         conn.connect();
 
-        const sql = 'select * from major where major_name like ?';
-        const params = ['%' + name + '%', (page - 1) * pageSize, pageSize];
+        const sql = `select
+                        major.*, department.department_name 
+                     from major, department 
+                     where major.department_id=department.department_id
+                     and major_name like ?`;
+        const params = ['%' + major_name + '%', (page - 1) * pageSize, pageSize];
         conn.query(sql, params, function(err, results) {
             err ? rej(err) : res(results);
         });

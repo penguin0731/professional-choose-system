@@ -114,7 +114,14 @@ exports.searchTeachers = async function(name, page, pageSize) {
         var conn = createConnection();
         conn.connect();
 
-        var sql = 'select * from person where role_id<>1 and role_id<>2 and name like ? limit ?,?';
+        var sql = `select 
+                        person.*, role.role_name 
+                   from person, role 
+                   where person.role_id<>1 
+                   and person.role_id<>2 
+                   and person.role_id=role.role_id
+                   and name like ? 
+                   limit ?,?`;
         const params = ['%' + name + '%', (page - 1) * pageSize, pageSize];
         conn.query(sql, params, function(err, results) {
             err ? rej(err) : res(results);

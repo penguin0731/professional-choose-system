@@ -1,5 +1,4 @@
 import api from '@/api';
-import { Message } from 'element-ui';
 
 function formatDirect(data) {
     let newData = data.map(item => {
@@ -66,8 +65,13 @@ export default {
             commit('setCount', result.count);
             commit('setDirectionList', result.data);
         },
-        async addDirection({ state, dispatch }, addForm) {
-            const result = await api.direction.addDirection(addForm)
+        async addDirection({ state, dispatch }, direction) {
+            const result = await api.direction.addDirection({direction})
+            dispatch('findByPage', { id: state.major_id, page: state.currentPage, pageSize: state.pageSize });
+            return result;
+        },
+        async delDirections({ state, dispatch }, directions) {
+            const result = await api.direction.delDirections({directions});
             dispatch('findByPage', { id: state.major_id, page: state.currentPage, pageSize: state.pageSize });
             return result;
         },

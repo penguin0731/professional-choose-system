@@ -43,7 +43,7 @@ router.post('/addMajors', async function(request, response) {
  * 请求参数: majors    array   [{},{}]   专业数组
  * majors[item]       {major_id: xxx}
  */
-router.delete('/delMajors', async function(request, response) {
+router.post('/delMajors', async function(request, response) {
     const majors = request.body.majors;
     const result = await majService.delMajors(majors);
     response.send(result);
@@ -74,7 +74,6 @@ router.get('/searchMajors', async function(request, response) {
  */
 router.post('/updateMajor', async function(request, response) {
     const major = request.body;
-    console.log(major);
     const result = await majService.updateMajor(major);
     response.send(result);
 });

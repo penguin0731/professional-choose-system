@@ -38,6 +38,11 @@ export default {
             dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
             return result;
         },
+        async delMajors({ state, dispatch }, majors) {
+            const result = await api.major.delMajors({ majors });
+            dispatch('findByPage', { page: state.currentPage, pageSize: state.pageSize });
+            return result;
+        },
         async searchMajors({ commit }, value) {
             const result = await api.major.searchMajors({ name: value });
             commit('setCount', result.count);

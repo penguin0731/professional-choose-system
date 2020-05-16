@@ -8,7 +8,7 @@ exports.count = async function(id) {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
 
-		const sql = 'select count(*) as val from direction where major_id=?';
+		const sql = 'select count(*) as val from direction where major_id=? and delete_flag=1';
 		conn.query(sql, id, function(err, results) {    //执行sql语句
 			err ? rej(err) : res(results[0].val);
 		});
@@ -33,6 +33,7 @@ exports.findByPage = async function(id, page, pageSize) {
 					from direction, grade
 					where major_id=? 
 					and direction.grade_id=grade.grade_id
+					and delete_flag=1
 					limit ?,?`;
 		const params = [id, (page - 1) * pageSize, +pageSize]; //为占位符(sql参数)提供数据
 		conn.query(sql, params, function(err, results) {
@@ -72,7 +73,7 @@ exports.delDirections = async function(directions) {
 		conn.connect();
 
 		for (const dir of directions) {
-			const sql = 'delete from direction where direction_id=?';
+			const sql = 'update direction set delete_flag=0 where direction_id=?';
 			conn.query(sql, [dir.direction_id], function(err, results) {
 				err ? rej(err) : res({msg: '删除成功'});
 			}); //执行sql语句
@@ -90,7 +91,7 @@ exports.searchCount = async function(id, name) {
 		const conn = createConnection(); //创建连接
 		conn.connect(); //打开连接
 
-		const sql = 'select count(*) as val from direction where major_id=? and name like ?';
+		const sql = 'select count(*) as val from direction where major_id=? and name like ? and delete_flag=1';
 		const params = [id, '%' + name + '%'];
 		conn.query(sql, params, function(err, results) {
 			//执行sql语句
@@ -109,7 +110,7 @@ exports.searchDirections = async function(id, name, page, pageSize) {
 		const conn = createConnection();
 		conn.connect();
 
-		const sql = 'select * from direction where major_id=? and direction_name like ? limit ?,?';
+		const sql = 'select * from direction where delete_flag=1 and major_id=? and direction_name like ? limit ?,?';
 		const params = [id, '%' + name + '%', (page - 1) * pageSize, +pageSize];
 		conn.query(sql, params, function(err, results) {
 			err ? rej(err) : res(results);
@@ -154,7 +155,7 @@ exports.findDirectByUser = async function(user) {
 		const conn = createConnection();
 		conn.connect();
 
-		const sql = `select * from direction where grade_id=? and major_id=?`;
+		const sql = `select * from direction where grade_id=? and major_id=? and delete_flag=1`;
 		const params = [user.grade_id, user.major_id];
 		conn.query(sql, params, function (err, results) {
 			err ? rej(err) : res(results);

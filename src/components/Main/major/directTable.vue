@@ -12,14 +12,14 @@
             <i class="el-icon-plus"></i>
             添加
           </el-button>
-          <el-button v-if="showBtn.isDel" type="danger" size="small">
+          <el-button v-if="showBtn.isDel" type="danger" size="small" @click="del">
             <i class="el-icon-delete"></i>
             删除
           </el-button>
         </el-button-group>
       </div>
       <el-input v-model="input" placeholder="模糊查询"></el-input>
-      <el-button type="primary" size="small">查询</el-button>
+      <el-button type="primary" size="small" @click="search">查询</el-button>
     </div>
     <el-table
       v-loading="loading"
@@ -172,7 +172,7 @@ export default {
       "setSelection",
       "setDirectionList"
     ]),
-    ...mapActions("direction", ["findByPage", "updateMajor"]),
+    ...mapActions("direction", ["findByPage", "delDirections", "searchDirections"]),
     //修改每页展示几条数据
     handleSizeChange(val) {
       this.setPageSize(val);
@@ -198,6 +198,40 @@ export default {
         this.directForm = { ...row };
       }else {
         this.formTitle = "添加"; 
+      }
+    },
+    del() {
+      const length = this.multipleSelection.length;
+      const formData = this.multipleSelection.map(item => ({
+        direction_id: item.direction_id
+      }));
+      this.$confirm(`是否删除选中的${length}个方向信息?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.delDirections(formData).then(res => {
+            this.$message({
+              message: res.msg,
+              type: "success",
+              duration: 2000,
+              center: true
+            });
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    search() {
+      if (this.input == "") {
+        this.findByPage({ id: this.major_id, page: this.currentPage, pageSize: this.pageSize });
+      } else {
+        this.searchDirections(this.input);
       }
     }
   }

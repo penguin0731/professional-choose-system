@@ -94,7 +94,6 @@ export default {
           ...this.majorForm
         };
         delete formData.department_name;
-        delete formData.major_name;
         if (this.formTitle == "编辑") {
           this.updateMajor(formData).then(res => {
             this.$message({

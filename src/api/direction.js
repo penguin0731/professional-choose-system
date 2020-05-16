@@ -1,5 +1,4 @@
 import axios from 'axios';
-import qs from 'qs';
 const url = {
     findByPage: '/api/direction/findByPage',
     addDirection: '/api/direction/addDirection',
@@ -28,8 +27,8 @@ const direction = {
     async delDirections(params) {
         const data = JSON.stringify(params);
         const result = await axios({
-            url: url.delMajors,
-            method: 'delete',
+            url: url.delDirections,
+            method: 'post',
             headers: {
                 "Content-Type": 'application/json; charset=UTF-8'
             },

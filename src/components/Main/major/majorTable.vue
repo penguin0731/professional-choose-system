@@ -180,8 +180,7 @@ export default {
     ...mapActions("major", [
       "findByPage",
       "delMajors",
-      "searchMajors",
-      "updateMajor"
+      "searchMajors"
     ]),
     ...mapMutations("direction", ["setMajorId"]),
     //修改每页展示几条数据
@@ -199,10 +198,10 @@ export default {
     // 展示专业表单
     showMajorForm(isShow, row, e) {
       this.majorFormVisible = isShow;
-      if(e) {
+      if (e) {
         this.formTitle = "编辑";
         this.majorForm = { ...row };
-      }else {
+      } else {
         this.formTitle = "添加";
       }
     },
@@ -213,13 +212,16 @@ export default {
     },
     del() {
       const length = this.multipleSelection.length;
+      const formData = this.multipleSelection.map(item => ({
+        major_id: item.major_id
+      }));
       this.$confirm(`是否删除选中的${length}个专业信息?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.delMajors(this.multipleSelection).then(res => {
+          this.delMajors(formData).then(res => {
             this.$message({
               message: res.msg,
               type: "success",
